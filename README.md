@@ -8,6 +8,7 @@ https://usf-cs360-spring2020.github.io/project-cbudamagunta1/
 
 I am a **computer science major** graduating in **May 2020**. I am also a theater minor and love finding ways to blend tech and art.
 
+https://github.com/usf-cs360-spring2020/project-cbudamagunta1
 
 #   
 
