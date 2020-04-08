@@ -1,7 +1,7 @@
 # README
 https://usf-cs360-spring2020.github.io/project-cbudamagunta1/
 
-![Profile Image](chaitrika.jpeg)
+![Profile Image](styling/chaitrika.jpeg)
 
 **Name:** Chaitrika Budamagunta   
 **Email:** <cbudamagunta@dons.usfca.edu>
