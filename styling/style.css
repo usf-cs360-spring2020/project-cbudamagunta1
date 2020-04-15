@@ -1,5 +1,17 @@
 /*
-* Custom styling
+* Template Styling
+*/
+.hero.is-dark.is-bold {
+  background: linear-gradient(45deg, rgba(232, 81, 99) 20%, rgba(95,55,196,1) 60%, rgba(50, 135, 161)) !important;
+}
+
+.footer {
+  background-color: black;
+}
+
+
+/*
+* Visualization Styling
 */
 
 svg {
@@ -13,14 +25,6 @@ detail {
 
   font-family: sans-serif;
   font-size: 9pt;
-}
-
-p#caption {
-  font-size: 12px;
-}
-
-p#buttons {
-  font-family: sans-serif;
 }
 
 #tooltip {
@@ -73,4 +77,16 @@ table {
 
 th {
   text-align: right;
+}
+
+
+/*
+* Page Styling
+*/
+p#caption {
+  font-size: 12px;
+}
+
+p#buttons {
+  font-family: sans-serif;
 }
