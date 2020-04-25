@@ -106,7 +106,7 @@
       <div class="content">
         <h1 class="title"id="data">Data</h1>
 
-          <hr>
+        <hr>
 
         <h2>Who Becomes an Inventor in America? The Importance of Exposure to Innovation</h2>
 
@@ -117,6 +117,9 @@
             in other, underrepresented populations.
           </p>
 
+          <p>The projects consists of 7 different datasets, each focusing on a different area within the overall subject.
+            The project was <strong>accessed on April 11th, 2020</strong>.</p>
+
           <p class="buttons">
             <a class="button is-medium is-danger is-light is-outlined" href="https://opportunityinsights.org/paper/losteinsteins/">
               <span>Project Background</span>
@@ -126,9 +129,6 @@
             </a>
           </p>
 
-          <p>The projects consists of 7 different datasets, each focusing on a different area within the overall subject.
-            The project was accessed on April 11th, 2020.</p>
-
           <blockquote><strong>Credited to:</strong> Alex Bell, Raj Chetty, Xavier Jaravel, Neviana Petkova, John van Reenen</blockquote>
 
           <blockquote>
@@ -137,16 +137,18 @@
           </blockquote>
 
 
-
-
           <h2>Specific Datasets</h2>
 
-          <p>Within this project, the specific datasets used in these visualizations are: </p>
-          <ul>
-            <li>Origins of Inventors: Innovation Rates by Childhood State, Gender, and Parent Income</li>
-            <li>Innovation Rates by College</li>
-            <li>Careers of Inventors: Innovation Rates by Current State, Gender, Year of Birth, and Age</li>
-          </ul>
+          <p>Within this project, the specific datasets used in these visualizations are:
+            <ol>
+              <li>Origins of Inventors: Innovation Rates by Childhood State, Gender, and Parent Income</li>
+              <li>Careers of Inventors: Innovation Rates by Current State, Gender, Year of Birth, and Age</li>
+              <li>Innovation Rates by College</li>
+            </ol>
+          </p>
+
+          <p>1 and 3 share the same birth cohort, 1980-1984.</p>
+
 
           <hr>
 
@@ -161,7 +163,7 @@
                 <hr>
                 <p class="subtitle">Link to Dataset Codebook:</p>
                 <p class="buttons"><a class="button is-medium is-danger is-light is-outlined" href="https://opportunityinsights.org/wp-content/uploads/2018/04/Inventors-Codebook-Table-1.pdf">
-                    <span>Readme</span>
+                    <span>Table 1b</span>
                   </a>
                 </p>
               </div>
@@ -201,7 +203,7 @@
                 <hr>
                 <p class="subtitle">Link to Dataset Codebook:</p>
                 <p class="buttons"><a class="button is-medium is-danger is-light is-outlined" href="https://opportunityinsights.org/wp-content/uploads/2018/04/Inventors-Codebook-Table-3.pdf">
-                    <span>Readme</span>
+                    <span>Table 3</span>
                   </a>
                 </p>
               </div>
@@ -221,11 +223,10 @@
 
           <strong>Relevant Columns: </strong>
           <ul>
-            <li><strong>par_stateabbrv (State):</strong> Two-letter state abbreviation</li>
-            <li><strong>inventor:</strong> Share of children who go on to become inventors</li>
-            <li><strong>top5cit:</strong> Share of children with patent citations in top 5% of their birth cohort, using total number of citations</li>
-            <li><strong>[outcome]_pq_[quintile]:</strong> Identical to variable [outcome], but restricting the sample to children whose parental income
-              is in quintile [quintile] of the parent income distribution of the children’s birth cohort.</li>
+            <li><strong>instnm:</strong> Institution Name</li>
+            <li><strong>inventor:</strong> Share of inventors among students</li>
+            <li><strong>inventor_pq_[quintile]:</strong> Share of inventors among students with parents in quintile [quintile]</li>
+            <li><strong>count:</strong> Number of students</li>
           </ul>
 
 
@@ -241,7 +242,7 @@
                 <hr>
                 <p class="subtitle">Link to Dataset Codebook:</p>
                 <p class="buttons"><a class="button is-medium is-danger is-light is-outlined" href="https://opportunityinsights.org/wp-content/uploads/2018/04/Inventors-Codebook-Table-2.pdf">
-                    <span>Readme</span>
+                    <span>Table 2b</span>
                   </a>
                 </p>
               </div>
@@ -261,11 +262,12 @@
 
           <strong>Relevant Columns: </strong>
           <ul>
-            <li><strong>par_stateabbrv (State):</strong> Two-letter state abbreviation</li>
-            <li><strong>inventor:</strong> Share of children who go on to become inventors</li>
-            <li><strong>top5cit:</strong> Share of children with patent citations in top 5% of their birth cohort, using total number of citations</li>
-            <li><strong>[outcome]_pq_[quintile]:</strong> Identical to variable [outcome], but restricting the sample to children whose parental income
-              is in quintile [quintile] of the parent income distribution of the children’s birth cohort.</li>
+            <li><strong>stateabbrv:</strong> Two-letter state abbreviation</li>
+            <li><strong>cohort:</strong> Year of birth</li>
+            <li><strong>applicant:</strong> Fraction of individual who apply for a patent in current calendar year</li>
+            <li><strong>grantee:</strong> Fraction of individual who apply for a patent in current year that is subsequently granted</li>
+            <li><strong>[outcome]_g_m:</strong> Identical to variable [outcome], but restricting the sample to males</li>
+            <li><strong>[outcome]_g_f:</strong> Identical to variable [outcome], but restricting the sample to females</li>
           </ul>
 
       </div>
