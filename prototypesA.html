@@ -37,7 +37,7 @@
   <nav class="navbar is-black" role="navigation" aria-label="main navigation">
     <div class="container">
       <div class="navbar-brand">
-        <a class="navbar-item is-active" href="index.html">
+        <a class="navbar-item" href="index.html">
           <span class="icon"><i class="fas fa-home"></i></span>
           <span>Home</span>
         </a>
@@ -62,7 +62,7 @@
               <span>Prototypes</span>
             </a>
             <div class="navbar-dropdown">
-               <a class="navbar-item" href="prototypesA.html">
+               <a class="navbar-item is-active" href="prototypesA.html">
                  <!-- <span class="icon"><i class="fas fa-chart-scatter"></i></span> -->
                  <span>Alpha Prototype</span>
                </a>
@@ -98,61 +98,31 @@
     </div>
   </nav>
   <!-- End page navigation -->
-
   <section class="section">
     <div class="container">
       <!-- Begin page content -->
       <div class="content">
-        <h1 class="title">
-          Final Project
+        <h1 class="title" id="prototype">
+          Alpha Prototype
         </h1>
 
-        <hr>
+          <hr>
 
-        <h2>Narrative</h2>
+        <h2>Rate of Inventors Based on Parental Income</h2>
+        <p>This basic prototype uses the <strong><em>Origins of Inventors: Innovation Rates by Childhood State, Gender, and Parent Income</em></strong>
+          dataset to look at the different share of children who become inventors based on the income quintile of their parents.</p>
 
-        <p>They say innovation is what drives us forward, but not everyone gets the chance at becoming an
-          inventor. Often this is simply because of the situations they happen to be born into. Looking at the patterns found
-          amongst those who do go on to be inventors can help us understand how to support those voices that do not get heard.
-          Having greater diversity and different perspectives in innovation will lead to greater advancements overall.
-        </p>
+        <p>Columns Used:</p>
+          <ul>
+            <li><strong>par_stateabbrv (State):</strong> Two-letter state abbreviation.</li>
+            <li><strong>inventor_pq_1:</strong> Share of children who go on to become inventors, restricting the sample to children whose parental
+              income is in quintile 1 of the parent income distribution of the children’s birth cohort.</li>
+              <li><strong>inventor_pq_5:</strong> Share of children who go on to become inventors, restricting the sample to children whose parental
+                income is in quintile 5 of the parent income distribution of the children’s birth cohort.</li>
+            <li><strong>top5cit:</strong> Share of children with patent citations in top 5% of their birth cohort, using total number of citations.</li>
+          </ul>
 
-        <p>The <strong><em>Who Becomes an Inventor in America? The Importance of Exposure to Innovation</em></strong> project
-          from <strong>Opportunity Insights</strong> looks at the key factors amongst individuals who
-          become inventors in the United States, as measured by filing a patent. They look at different conditions that encouraged innovation
-          in these individuals, in order to determine what policies would be most effective at sparking that innovation
-          in other, underrepresented populations.
-        </p>
-
-        <p class="buttons"><a class="button is-medium is-primary is-light is-outlined is-rounded" href="data.html">
-          <span>More about the Dataset</span>
-          </a>
-        </p>
-
-        <h2>Visualizations</h2>
-
-        <p>My visualizations look at [TBD]</p>
-
-        <p class="buttons are-large">
-          <a class="button is-success is-light is-outlined" href="">
-            <span>TBD</span>
-          </a>
-
-          <a class="button is-warning is-light is-outlined" href="">
-            <span>TBD</span>
-          </a>
-
-          <a class="button is-danger is-light is-outlined" href="">
-            <span>TBD</span>
-          </a>
-        </p>
-
-        <p class="buttons are-large">
-          <a class="button is-primary is-light is-outlined" href="prototypes.html">
-            <span>Prototypes</span>
-          </a>
-        </p>
-
+        <p><img src="Proto1.png"></p>
       </div>
       <!-- End page content -->
     </div>
