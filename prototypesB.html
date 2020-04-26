@@ -108,51 +108,62 @@
 
           <hr>
 
-          <h2>[title]</h2>
+          <h2>Innovation Rates based on Parent Quintile, Gender, and Childhood State of Residence</h2>
 
           <h3>Question</h3>
           <p>
             What patterns can be found amongst innovation rates based on parent quintile, gender, and state of residence during childhood?
+            Which of these has the greatest impact?
           </p>
 
 
           <h3>Encoding</h3>
-          <p>Describe how your visualization is encoded. Use precise visualization terminology, including the name
-            of the overall visualization technique and the visual channels you are using to encode the data
-          </p>
+          <p>This visualization is a scatter-plot matrix comparing innovation rates based on different variables, and seeing how they compare. The x and y
+            axis encode the percentage of inventors based on different factors. Color encodes the percentage of children with patent citations in the top
+            5% of their birth cohort. Size encodes the number of children overall. Each point represents one state.</p>
 
-          <p>This visualization is a scatter-plot matrix comparing different variables and their impact on innovation rates.</p>
+          <h4>Dataset Used:</h4>
+          <p><strong>Origins of Inventors: Innovation Rates by Childhood State, Gender, and Parent Income</strong></p>
 
-          <p>Dataset Used: <strong>Origins of Inventors: Innovation Rates by Childhood State, Gender, and Parent Income</strong></p>
-          <p>Columns:
+          <h4>Columns:</h4>
+          <p>
           <ul>
-            <li><strong></strong></li>
+            <li><strong>inventor:</strong> share of children who go on to become inventors</li>
+            <li><strong>inventor_g_m:</strong> same as <strong>inventor</strong> but restricted to males</li>
+            <li><strong>inventor_g_f:</strong> same as <strong>inventor</strong> but restricted to females</li>
+            <li><strong>inventor_pq_1:</strong>same as <strong>inventor</strong> but restricted to children whose
+                parental income is in quintile 1 of the parent income distribution of the children's birth cohort</li>
+            <li><strong>inventor_pq_5:</strong>same as <strong>inventor</strong> but restricted to children whose
+                parental income is in quintile 5 of the parent income distribution of the children's birth cohort</li>
+            <li><strong>top5cit:</strong> share of children with patent citations in top 5% of their birth cohort,
+                using total number of citations</li>
+            <li><strong>kid_count:</strong> number of children</li>
           </ul>
           </p>
 
 
           <h3>Planned Interactivity</h3>
 
-          <p>The final visuzalization will include details-on-demand to show greater detail for each point. There will be
-            brushing to highlight different groups of points in different matrix plots to see how points compare against
-            different variables. There will also be filtering by state to show different sub-groups of data at a time. T</p>
+          <p>The final visuzalization will include details-on-demand to show specific percentages for each point, as well as basic highlighting and
+            raising when a point is hovered over.
+            There will be brushing to highlight different groups of points in different matrix plots to see how points compare against
+            different variables. There will also be filtering by state to show different sub-groups of data at a time.</p>
 
           <p>I plan to also include at least one other visualization to supplement this one, and for that I plan to make a choropleth
             map using the <strong>Careers of Inventors: Innovation Rates by Current State, Gender, Year of Birth, and Age</strong> dataset
-            to look at patterns among adults, to examine how childhood can inform opportunites into adulthood.</p>
+            to look at patterns among adults, to examine how childhood can inform opportunites into adulthood. The two visualizations will
+            ideally be linked as well by state.</p>
 
 
           <h3>Prototype</h3>
-          <!-- <p><img src="Proto1.png"></p> -->
+          <p><img src="Proto2.png"></p>
           <p id="caption"><strong>Chaitrika Budamagunta</strong><br>
             <em>Who Becomes an Inventor in America? The Importance of Exposure to Innovation</em><br>
             <strong>Source:</strong> https://opportunityinsights.org/paper/losteinsteins/</p>
 
 
           <h3>Answer</h3>
-          <p>The answer to the question you were able to learn from the prototype. It is possible your prototype does not
-            do a great job of answering your question---that is a positive result of this exercise. You need to iterate multiple
-            different visualization techniques and designs of a single visualization to reach the final version!
+          <p>
           </p>
       </div>
       <!-- End page content -->
