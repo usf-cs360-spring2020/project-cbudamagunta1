@@ -56,7 +56,7 @@
             <span>Data</span>
           </a>
 
-          <a class="navbar-item" href="visualization.html" title="Visualization">
+          <a class="navbar-item is-active" href="visualization.html" title="Visualization">
             <span class="icon"><i class="fas fa-chart-area"></i></span>
             <span>Visualization</span>
           </a>
@@ -81,7 +81,7 @@
 
         <!-- Right navbar items -->
         <div class="navbar-end">
-          <a class="navbar-item is-active" href="about.html" title="About">
+          <a class="navbar-item" href="about.html" title="About">
             <span class="icon"><i class="fas fa-info-circle"></i></span>
             <span>About</span>
           </a>
@@ -95,51 +95,60 @@
     <div class="container">
       <!-- Begin page content -->
       <div class="content">
-        <h1 class="title"id="about">
-          About
+        <h1 class="title">
+          Final Visualization
         </h1>
 
-          <hr>
+        <hr>
 
-        <article class="media">
-          <figure class="media-left">
-            <p class="image is-128x128"><img class="is-rounded" src="styling/chaitrika.jpeg"></p>
-          </figure>
 
-          <div class="media-content">
-            <div class="content">
-              <p>
-                <strong>Chaitrika Budamagunta</strong><br/>
-                CS Major, <a href="https://www.usfca.edu/">University of San Francisco</a><br/>
-                <em>Expected Graduation: May 2020</em><br/>
-                <i class="fas fa-envelope"></i> <a href="mailto:username@dons.usfca.edu">cbudamagunta@dons.usfca.edu</a>
-              </p>
+        <h2>[Title]</h2>
 
-              <p>
-                My name is Chay, I am a computer science major and a theater minor, and I love finding ways to blend tech and art.
-              </p>
+        <h3>Question</h3>
+        <p>Description: what type of visualizations</p>
 
-              <p>I chose this specific dataset because I found it very intesting to look closer at what conditions are most conducive for
-                innovation across the US. I am personally passionate about allowing for diverse and underrepresented voices to be heard in
-                spaces where they are systematically pushed out. Innovation is something that is supposed to drive us forward, but when that
-                is not accessible to all groups of people, we only get advancement in one specific direction, from one perspective. Looking
-                at datasets like this can help us understand where the system is lacking, and hopefully can encourage change to allow for
-                more opportunity.
-              </p>
+        <h3>Encoding</h3>
+        <p>Encoding: Explain to general users how your data is encoded and how to interpret your visualization(s).</p>
 
-              <div class="heading">Skills</div>
-              <div class="tags">
-                <span class="tag">Python</span>
-                <span class="tag">C</span>
-                <span class="tag">Java</span>
-                <span class="tag">JavaScript</span>
-                <span class="tag">HTML</span>
-                <span class="tag">CSS</span>
-              </div>
-            </div>
-          </div>
-        </article>
-        <!-- End profile box -->
+        <h3>Interactivity</h3>
+        <p>Interactivity: Explain to general users how to interact with your visualization(s).</p>
+
+
+
+        <!-- Include d3.js v5 -->
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <!-- Include d3.js modules -->
+        <script src="https://d3js.org/d3-array.v2.min.js"></script>
+        <!-- include d3-legend: https://d3-legend.susielu.com/ -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js" integrity="sha256-qo76Vs9B6JAALbrTn+PcN1r09hbNLd2M78V19glOMeU=" crossorigin="anonymous"></script>
+
+        <script src="https://d3js.org/d3-path.v1.min.js"></script>
+        <script src="https://d3js.org/d3-shape.v1.min.js"></script>
+        <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script>
+
+
+        <svg id="Vis"></svg>
+        <p id="caption"><strong>Chaitrika Budamagunta</strong><br>
+          Who Becomes an Inventor in America? The Importance of Exposure to Innovation<br>
+          <strong>Source:</strong> https://opportunityinsights.org/paper/losteinsteins/</p>
+
+        <!-- Include custom javascript -->
+        <script src=""></script>
+
+
+        <h3>Findings</h3>
+        <p>Findings: Explain a major finding from your visualization to general users. This should help support your
+        overall narrative or theme. You can pose this in a question/answer format like your prototype page.</p>
+
+
+
+        <h2>Attribution</h2>
+        <p><strong>Code Examples Used:</strong></p>
+        <ul>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
 
       </div>
       <!-- End page content -->
