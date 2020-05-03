@@ -126,15 +126,27 @@
         <script src="https://d3js.org/d3-shape.v1.min.js"></script>
         <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script>
 
+        <script src="https://unpkg.com/topojson-client@3"></script>
 
-        <svg id="Vis"></svg>
+
+        <svg id="Vis" width="975" height="610">
+          <g id="basemap"></g>
+          <g id="states"></g>
+
+          <g id="outline"></g>
+
+          <g id="tooltip" pointer-events="none"></g>
+          <g id="details" pointer-events="none"></g>
+
+          <g id="legend"></g>
+        </svg>
+
         <p id="caption"><strong>Chaitrika Budamagunta</strong><br>
           Who Becomes an Inventor in America? The Importance of Exposure to Innovation<br>
           <strong>Source:</strong> https://opportunityinsights.org/paper/losteinsteins/</p>
 
         <!-- Include custom javascript -->
-        <script src="wrangling.js"></script>
-        <script src="hierarchy.js"></script>
+        <script src="childhoodMap.js"></script>
 
 
         <h3>Findings</h3>
@@ -146,9 +158,17 @@
         <h2>Attribution</h2>
         <p><strong>Code Examples Used:</strong></p>
         <ul>
-          <li></li>
-          <li></li>
-          <li></li>
+          <li>https://observablehq.com/@d3/choropleth</li>
+          <li>https://observablehq.com/@mbostock/mortality-due-to-alcohol-use-disorder</li>
+          <li>https://observablehq.com/@d3/u-s-map</li>
+          <li>https://github.com/topojson/us-atlas</li>
+          <li>https://github.com/d3/d3-geo</li>
+          <li>https://bl.ocks.org/sjengle/2f6d4832397e3cdd78d735774cb5a4f2</li>
+          <li>https://observablehq.com/@d3/bivariate-choropleth</li>
+          <li>https://observablehq.com/@d3/threshold-choropleth</li>
+          <li>https://bl.ocks.org/wilson428/c8fe76d04c280f0b5f36180329e034ef</li>
+          <li>https://gist.github.com/wilson428/c8fe76d04c280f0b5f36180329e034ef</li>
+          <li>https://www.ers.usda.gov/data-products/commuting-zones-and-labor-market-areas/</li>
         </ul>
 
       </div>

@@ -14,10 +14,10 @@
 * Visualization Styling
 */
 
-svg {
+/* svg {
   width: 960px;
   height: 500px;
-}
+} */
 
 detail {
   background-color: white;
@@ -45,7 +45,7 @@ path.land {
   stroke: none;
 }
 
-path.neighborhood {
+path.state {
   fill: none;
   stroke: white;
   stroke-width: 3.5px;
