@@ -2,6 +2,8 @@
 * SETUP
 */
 
+var dataLoaded;
+
 const urls = {
   basemap: "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json"
 };
@@ -10,9 +12,6 @@ const svg = d3.select("body").select("svg#Vis");
 
 const g = {
   basemap: svg.select("g#basemap"),
-  outline: svg.select("g#outline"),
-
-
   states: svg.select("g#states"),
   tooltip: svg.select("g#tooltip"),
   details: svg.select("g#details"),
@@ -31,8 +30,8 @@ const details = g.details.append("foreignObject")
   .attr("id", "details")
   .attr("width", 325)
   .attr("height", 600)
-  .attr("x", 0)
-  .attr("y", 0);
+  .attr("x", 20)
+  .attr("y", 20);
 
 const body = details.append("xhtml:detail")
   .style("text-align", "left")
@@ -41,10 +40,67 @@ const body = details.append("xhtml:detail")
 
 details.style("visibility", "hidden");
 
-let colorScale = d3.scaleQuantize();
+var colorScale = d3.scaleQuantize();
 
-// let colorScale = d3.scaleThreshold()
 
+/*
+* SELECTION TO SWITCH DATA
+*/
+
+
+var dataOptions = [
+  "Inventor - Parent Quintile 1",
+  "Inventor - Parent Quintile 2",
+  "Inventor - Parent Quintile 3",
+  "Inventor - Parent Quintile 4",
+  "Inventor - Parent Quintile 5"
+]
+
+var selectedVariable;
+var variableTitle;
+
+var select = d3.select('body')
+  .select('select')
+  	.attr('class','select')
+    .on('change',onchange)
+
+var options = select
+  .selectAll('option')
+	.data(dataOptions).enter()
+	.append('option')
+    .text(d => d);
+
+variableTitle = d3.select('select').property('value');
+
+if(variableTitle == "Inventor - Parent Quintile 1"){
+  selectedVariable = "inventorPQ1";
+}else if (variableTitle == "Inventor - Parent Quintile 2") {
+  selectedVariable = "inventorPQ2";
+}else if (variableTitle == "Inventor - Parent Quintile 3") {
+  selectedVariable = "inventorPQ3";
+}else if (variableTitle == "Inventor - Parent Quintile 4") {
+  selectedVariable = "inventorPQ4";
+}else if (variableTitle == "Inventor - Parent Quintile 5") {
+  selectedVariable = "inventorPQ5";
+};
+
+function onchange() {
+  variableTitle = d3.select('select').property('value');
+
+  if(variableTitle == "Inventor - Parent Quintile 1"){
+    selectedVariable = "inventorPQ1";
+  }else if (variableTitle == "Inventor - Parent Quintile 2") {
+    selectedVariable = "inventorPQ2";
+  }else if (variableTitle == "Inventor - Parent Quintile 3") {
+    selectedVariable = "inventorPQ3";
+  }else if (variableTitle == "Inventor - Parent Quintile 4") {
+    selectedVariable = "inventorPQ4";
+  }else if (variableTitle == "Inventor - Parent Quintile 5") {
+    selectedVariable = "inventorPQ5";
+  };
+
+  colorMap(dataLoaded);
+};
 
 
 /*
@@ -53,12 +109,17 @@ let colorScale = d3.scaleQuantize();
 
 /* Set up projection */
 const projection = d3.geoAlbersUsa().scale(1300).translate([487.5, 305]);
-
-const path = d3.geoPath()
-// .projection(projection);
+const path = d3.geoPath()// .projection(projection);
 
 
-d3.csv("table_1b.csv", parseData).then(colorMap);
+/*
+* LOAD DATA
+*/
+
+d3.csv("table_1b.csv", parseData).then(function(data) {
+  dataLoaded = data;
+  colorMap(dataLoaded);
+});
 
 
 /*
@@ -66,25 +127,36 @@ d3.csv("table_1b.csv", parseData).then(colorMap);
 */
 
 /*
-* Draw the individual complaint points
+* Set up color scale and trigger map drawing
 */
 function colorMap(data) {
 
-  let inventorPQ1 = data.map(row => row.inventorPQ1);
-  let colorMin = d3.min(inventorPQ1);
-  let colorMax = d3.max(inventorPQ1);
-  console.log(colorMin + " " + colorMax);
+  let dataVariable = data.map(row => row[selectedVariable]);
+  let colorMin = d3.min(dataVariable);
+  let colorMax = d3.max(dataVariable);
+
+  let colorScheme;
+  if(variableTitle == "Inventor - Parent Quintile 1"){
+    colorScheme = d3.schemePurples[9];
+  }else if (variableTitle == "Inventor - Parent Quintile 2") {
+    colorScheme = d3.schemeOranges[9];
+  }else if (variableTitle == "Inventor - Parent Quintile 3") {
+    colorScheme = d3.schemeBlues[9];
+  }else if (variableTitle == "Inventor - Parent Quintile 4") {
+    colorScheme = d3.schemeGreens[9];
+  }else if (variableTitle == "Inventor - Parent Quintile 5") {
+    colorScheme = d3.schemeBlues[9];
+  };
 
   colorScale
     .domain([colorMin, colorMax])
-    .range(d3.schemePurples[9])
-
-
-  drawLegend();
+    .range(colorScheme)
 
   d3.json(urls.basemap).then(function(json) {
     drawBasemap(json, data, colorScale);
   });
+
+  drawLegend();
 }
 
 /* LEGEND */
@@ -92,16 +164,29 @@ function drawLegend(){
 
   g.legend
     .attr("class", "legend")
-    .attr("transform", "translate(600,20)");
+    .attr("transform", "translate(710,30)");
 
   var legend = d3.legendColor()
-    .labelFormat(d3.format(".7f"))
-    // .useClass(true)
-    .title("PQ1")
-    .titleWidth(100)
+    .labelFormat(d3.format(".3"))
+    .title(variableTitle)
+    .titleWidth(500)
     .scale(colorScale)
-    .orient("horizontal")
-    .labelAlign("vertical");
+    // .orient("horizontal")
+    .shapePadding(0)
+    .shapeWidth(30)
+    // .shapeHeight(30)
+    ;
+
+
+  // let states = d3.select("#states");
+  //
+  // legend.on("cellover", function(d) {
+  //     let dataMatch = data.filter(e => e.properties.name === d.);
+  //
+  //   })
+  //   .on("cellout", function(d) {
+  //
+  //   });
 
   g.legend
     .call(legend);
@@ -119,6 +204,7 @@ function drawBasemap(json, data, colorScale) {
 
     /* Draw country shape */
     const basemap = g.basemap.append("path")
+      .attr("transform", "translate(30,120)")
       .datum(topojson.feature(json, json.objects.nation))
       .attr("d", path)
       .attr("class", "land");
@@ -126,14 +212,16 @@ function drawBasemap(json, data, colorScale) {
     /* Draw states */
     let statesData = topojson.feature(json, json.objects.states).features
     const states = g.states.selectAll("path.state")
-        .data(statesData)
-        .join("path")
-          .attr("d", path)
-          .attr("class", "state")
-          .style("fill", function (d) {
-            let dataMatch = data.filter(e => e.state === d.properties.name);
-            return colorScale(dataMatch[0].inventorPQ1);
-          });
+      .data(statesData)
+      .attr("id", "states")
+      .join("path")
+      .attr("transform", "translate(30,120)")
+        .attr("d", path)
+        .attr("class", "state")
+        .style("fill", function (d) {
+          let dataMatch = data.filter(e => e.state === d.properties.name);
+          return colorScale(dataMatch[0][selectedVariable]);
+        });
 
     /* Interactivity */
     states.on("mouseover", function(d) {
@@ -144,6 +232,26 @@ function drawBasemap(json, data, colorScale) {
       /* Tooltip */
       tip.text(d.properties.name);
       tip.style("visibility", "visible");
+
+      /* Details on Demand */
+      let dataMatch = data.filter(e => e.state === d.properties.name);
+      const html = `
+        <table border="0" cellspacing="0" cellpadding="2">
+        <tbody>
+          <tr>
+            <th>${variableTitle}</th>
+            <td>${dataMatch[0][selectedVariable]}</td>
+          </tr>
+          <tr>
+            <th>Inventor:</th>
+            <td>${dataMatch[0].inventor}</td>
+          </tr>
+        </tbody>
+        </table>
+      `;
+
+      body.html(html);
+      details.style("visibility", "visible");
     })
     .on("mousemove.tooltip", function(d) {
 
@@ -159,6 +267,9 @@ function drawBasemap(json, data, colorScale) {
 
       /* Tooltip */
       tip.style("visibility", "hidden");
+
+      /* Details on Demand */
+      details.style("visibility", "hidden");
     });
 }
 

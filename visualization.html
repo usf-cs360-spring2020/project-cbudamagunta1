@@ -125,15 +125,14 @@
         <script src="https://unpkg.com/topojson-client@3"></script>
 
 
-        <svg id="Vis" width="975" height="620">
+        <label for="dataSet">Choose the Data Variable to Display:</label>
+        <select id="dataSet"></select>
+
+        <svg id="Vis" width="1000" height="750">
           <g id="basemap"></g>
           <g id="states"></g>
-
-          <g id="outline"></g>
-
           <g id="tooltip" pointer-events="none"></g>
           <g id="details" pointer-events="none"></g>
-
           <g id="legend"></g>
         </svg>
 
@@ -165,6 +164,7 @@
           <li>https://bl.ocks.org/wilson428/c8fe76d04c280f0b5f36180329e034ef</li>
           <li>https://gist.github.com/wilson428/c8fe76d04c280f0b5f36180329e034ef</li>
           <li>https://www.ers.usda.gov/data-products/commuting-zones-and-labor-market-areas/</li>
+          <li>http://bl.ocks.org/jfreels/6734823</li>
         </ul>
 
       </div>
