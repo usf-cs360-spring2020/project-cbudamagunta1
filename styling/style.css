@@ -14,10 +14,11 @@
 * Visualization Styling
 */
 
-/* svg {
-  width: 960px;
-  height: 500px;
-} */
+svg {
+  /* width: 960px;
+  height: 500px; */
+  background-color: lightBlue;
+}
 
 detail {
   background-color: white;
@@ -32,7 +33,7 @@ detail {
   text-shadow: 0px 0px 2px white;
   font-size: 10pt;
 
-  fill: black;
+  fill: red;
   stroke: none;
 }
 
@@ -48,15 +49,7 @@ path.land {
 path.state {
   fill: none;
   stroke: white;
-  stroke-width: 3.5px;
-  pointer-events: none;
-}
-
-path.street {
-  fill: none;
-  stroke: white;
   stroke-width: 1px;
-  pointer-events: none;
 }
 
 .active {

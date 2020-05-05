@@ -41,6 +41,11 @@ const body = details.append("xhtml:detail")
 
 details.style("visibility", "hidden");
 
+let colorScale = d3.scaleQuantize();
+
+// let colorScale = d3.scaleThreshold()
+
+
 
 /*
 * MAP PROJECTION
@@ -53,102 +58,133 @@ const path = d3.geoPath()
 // .projection(projection);
 
 
-d3.json(urls.basemap).then(function(json) {
-
-  console.log(json);
-
-  var states = new Map(json.objects.states.geometries.map(d => [d.id, d.properties]));
-  console.log(states);
-
-  drawBasemap(json);
-});
+d3.csv("table_1b.csv", parseData).then(colorMap);
 
 
+/*
+* COLOR SCALE
+*/
+
+/*
+* Draw the individual complaint points
+*/
+function colorMap(data) {
+
+  let inventorPQ1 = data.map(row => row.inventorPQ1);
+  let colorMin = d3.min(inventorPQ1);
+  let colorMax = d3.max(inventorPQ1);
+  console.log(colorMin + " " + colorMax);
+
+  colorScale
+    .domain([colorMin, colorMax])
+    .range(d3.schemePurples[9])
+
+
+  drawLegend();
+
+  d3.json(urls.basemap).then(function(json) {
+    drawBasemap(json, data, colorScale);
+  });
+}
+
+/* LEGEND */
+function drawLegend(){
+
+  g.legend
+    .attr("class", "legend")
+    .attr("transform", "translate(600,20)");
+
+  var legend = d3.legendColor()
+    .labelFormat(d3.format(".7f"))
+    // .useClass(true)
+    .title("PQ1")
+    .titleWidth(100)
+    .scale(colorScale)
+    .orient("horizontal")
+    .labelAlign("vertical");
+
+  g.legend
+    .call(legend);
+}
+
+
+/*
+* MAP DRAWING
+*/
 
 /*
 * Draw the base map
 */
-function drawBasemap(json) {
+function drawBasemap(json, data, colorScale) {
 
+    /* Draw country shape */
     const basemap = g.basemap.append("path")
       .datum(topojson.feature(json, json.objects.nation))
       .attr("d", path)
       .attr("class", "land");
 
-
-
-    const basemap2 = g.basemap.selectAll("path.land")
-      .data(topojson.feature(json, json.objects.nation))
-      .enter()
-      .append("path")
-      .attr("d", path)
-      .attr("class", "land")
-      .attr("fill", "brown");
-
-
-      let statesData = topojson.feature(json, json.objects.states).features
-
-      const states = g.states.selectAll("path.state")
-          .data(statesData)
-          .enter()
-          .append("path")
+    /* Draw states */
+    let statesData = topojson.feature(json, json.objects.states).features
+    const states = g.states.selectAll("path.state")
+        .data(statesData)
+        .join("path")
           .attr("d", path)
           .attr("class", "state")
-          .on("mouseover", function() {
-            console.log("here");
-            d3.select(this).raise().classed("active", true);
-          })
-          .on("mouseout", function() { d3.select(this).lower().classed("active", false); });
+          .style("fill", function (d) {
+            let dataMatch = data.filter(e => e.state === d.properties.name);
+            return colorScale(dataMatch[0].inventorPQ1);
+          });
+
+    /* Interactivity */
+    states.on("mouseover", function(d) {
+
+      /* Highlight Neighborhoods */
+      d3.select(this).raise().classed("active", true);
+
+      /* Tooltip */
+      tip.text(d.properties.name);
+      tip.style("visibility", "visible");
+    })
+    .on("mousemove.tooltip", function(d) {
+
+      /* Tooltip */
+      const coords = d3.mouse(g.basemap.node());
+      tip.attr("x", coords[0]);
+      tip.attr("y", coords[1]);
+    })
+    .on("mouseout", function(d) {
+
+      /* Highlight Neighborhoods */
+      d3.select(this).lower().classed("active", false);
+
+      /* Tooltip */
+      tip.style("visibility", "hidden");
+    });
+}
 
 
-      //     svg.selectAll("path")
-      // .data(counties)
-      // .enter().append("path")
-      //   .attr("fill", d => color(d.properties.location_id))
-      //   .attr("d", path)
-      //   .on("mouseover", function() { d3.select(this).raise().classed("active", true); })
-      //   .on("mouseout", function() { d3.select(this).lower().classed("active", false); })
-      // .append("title")
-      //   .text(d => title(d.properties.location_id));
+/*
+* DATA HANDLING
+*/
 
+/*
+* Parse the data
+*/
+function parseData(row){
+  let keep = {};
 
-    // const states = g.states.append("path")
-    //   .datum(topojson.mesh(json, json.objects.states, (a, b) => a !== b))
-    //   .attr("fill", "none")
-    //   .attr("stroke", "black")
-    //   .attr("stroke-linejoin", "round")
-    //   .attr("d", path)
-    //   .attr(function(d) {
-    //      forEach((item, d) => {
-    //        item.properties.outline = item;
-    //        console.log(item);
-    //      });
-    //
-    //     d.properties.outline = this;
-    //   });
+  keep.inventor = parseFloat(row["inventor"]);
 
-  /* Highlight Neighborhoods */
-  // basemap.on("mouseover.highlight", function(d) {
-  //   d3.select(d.properties.outline).raise();
-  //   d3.select(d.properties.outline).classed("active", true);
-  // })
-  // .on("mouseout.highlight", function(d) {
-  //   d3.select(d.properties.outline).classed("active", false);
-  // });
-  //
-  // /* Tooltip */
-  // basemap.on("mouseover.tooltip", function(d) {
-  //   tip.text(d.properties.name);
-  //   tip.style("visibility", "visible");
-  // })
-  // .on("mousemove.tooltip", function(d) {
-  //   const coords = d3.mouse(g.basemap.node());
-  //   tip.attr("x", coords[0]);
-  //   tip.attr("y", coords[1]);
-  // })
-  // .on("mouseout.tooltip", function(d) {
-  //   tip.style("visibility", "hidden");
-  // });
+  keep.inventorPQ1 = parseFloat(row["inventor_pq_1"]);
+  keep.inventorPQ2 = parseFloat(row["inventor_pq_2"]);
+  keep.inventorPQ3 = parseFloat(row["inventor_pq_3"]);
+  keep.inventorPQ4 = parseFloat(row["inventor_pq_4"]);
+  keep.inventorPQ5 = parseFloat(row["inventor_pq_5"]);
+
+  keep.state = row["par_state"];
+  keep.stateAbbrv = row["par_stateabbrv"];
+
+  return keep;
 }
 
 
