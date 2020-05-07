@@ -4,8 +4,9 @@
 
 var dataLoaded;
 
-const urls = {
-  basemap: "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json"
+const files = {
+  basemap: "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json",
+  commutingZones: "datasets/czs_fips.json"
 };
 
 const svg = d3.select("body").select("svg#Vis");
@@ -13,6 +14,7 @@ const svg = d3.select("body").select("svg#Vis");
 const g = {
   basemap: svg.select("g#basemap"),
   states: svg.select("g#states"),
+  cz: svg.select("g#cz"),
   tooltip: svg.select("g#tooltip"),
   details: svg.select("g#details"),
   legend: svg.select("g#legend")
@@ -116,7 +118,7 @@ const path = d3.geoPath()// .projection(projection);
 * LOAD DATA
 */
 
-d3.csv("table_1b.csv", parseData).then(function(data) {
+d3.csv("datasets/table_1a.csv", parseData).then(function(data) {
   dataLoaded = data;
   colorMap(dataLoaded);
 });
@@ -152,8 +154,9 @@ function colorMap(data) {
     .domain([colorMin, colorMax])
     .range(colorScheme)
 
-  d3.json(urls.basemap).then(function(json) {
-    drawBasemap(json, data, colorScale);
+  /* Draw country outline */
+  d3.json(files.basemap).then(function(json) {
+    drawBasemap(json, data);
   });
 
   drawLegend();
@@ -200,7 +203,9 @@ function drawLegend(){
 /*
 * Draw the base map
 */
-function drawBasemap(json, data, colorScale) {
+function drawBasemap(json, data) {
+
+    let basemapData = json;
 
     /* Draw country shape */
     const basemap = g.basemap.append("path")
@@ -209,68 +214,174 @@ function drawBasemap(json, data, colorScale) {
       .attr("d", path)
       .attr("class", "land");
 
-    /* Draw states */
-    let statesData = topojson.feature(json, json.objects.states).features
-    const states = g.states.selectAll("path.state")
-      .data(statesData)
-      .attr("id", "states")
-      .join("path")
+      // /* Draw states */
+      // let statesData = topojson.feature(json, json.objects.states).features
+      // const states = g.states.selectAll("path.state")
+      //   .data(statesData)
+      //   .attr("id", "states")
+      //   .join("path")
+      //   .attr("transform", "translate(30,120)")
+      //     .attr("d", path)
+      //     .attr("class", "state")
+      //     .style("fill", function (d) {
+      //       let dataMatch = data.filter(e => e.state === d.properties.name);
+      //       return colorScale(dataMatch[0][selectedVariable]);
+      //     });
+      //
+      // /* Interactivity */
+      // states.on("mouseover", function(d) {
+      //
+      //   /* Highlight Neighborhoods */
+      //   d3.select(this).raise().classed("active", true);
+      //
+      //   /* Tooltip */
+      //   tip.text(d.properties.name);
+      //   tip.style("visibility", "visible");
+      //
+      //   /* Details on Demand */
+      //   let dataMatch = data.filter(e => e.state === d.properties.name);
+      //   const html = `
+      //     <table border="0" cellspacing="0" cellpadding="2">
+      //     <tbody>
+      //       <tr>
+      //         <th>${variableTitle}</th>
+      //         <td>${dataMatch[0][selectedVariable]}</td>
+      //       </tr>
+      //       <tr>
+      //         <th>Inventor:</th>
+      //         <td>${dataMatch[0].inventor}</td>
+      //       </tr>
+      //     </tbody>
+      //     </table>
+      //   `;
+      //
+      //   body.html(html);
+      //   details.style("visibility", "visible");
+      // })
+      // .on("mousemove.tooltip", function(d) {
+      //
+      //   /* Tooltip */
+      //   const coords = d3.mouse(g.basemap.node());
+      //   tip.attr("x", coords[0]);
+      //   tip.attr("y", coords[1]);
+      // })
+      // .on("mouseout", function(d) {
+      //
+      //   /* Highlight Neighborhoods */
+      //   d3.select(this).lower().classed("active", false);
+      //
+      //   /* Tooltip */
+      //   tip.style("visibility", "hidden");
+      //
+      //   /* Details on Demand */
+      //   details.style("visibility", "hidden");
+      // });
+
+      /* Draw commuter zones */
+      d3.json(files.commutingZones).then(function(json) {
+        drawCommutingZones(json, data, basemapData);
+      })
+}
+
+
+
+
+
+function drawCommutingZones(json, data, basemapData){
+
+  console.log(json);
+
+  var cz_lookup = {};
+  var cz_ids = {};
+
+  json.forEach(function(d) {
+    cz_lookup[d.fips] = d.cz_id;
+    cz_ids[d.cz_id] = 1;
+  });
+
+  cz_lookup["46102"] = cz_lookup["46113"];
+
+  var commuting_zones = [];
+
+  d3.keys(cz_ids).forEach(function(cz_id) {
+    var commuting_zone = topojson.merge(basemapData, basemapData.objects.counties.geometries.filter(
+      function(d) {
+        return cz_lookup[d.id] == cz_id;
+      }));
+
+    commuting_zones.push(commuting_zone);
+  });
+
+  const commuterZones = g.cz
+    .attr("id", "czs")
+    .selectAll(".cz")
+    .data(commuting_zones)
+    .enter()
+      .append("path")
       .attr("transform", "translate(30,120)")
-        .attr("d", path)
-        .attr("class", "state")
-        .style("fill", function (d) {
-          let dataMatch = data.filter(e => e.state === d.properties.name);
-          return colorScale(dataMatch[0][selectedVariable]);
-        });
+      .attr("class", "cz")
+      .attr("d", function(d) {
+        return path(d);
+      })
+      .style("fill", function (d) {
 
-    /* Interactivity */
-    states.on("mouseover", function(d) {
+        console.log("d: " + d);
 
-      /* Highlight Neighborhoods */
-      d3.select(this).raise().classed("active", true);
+        let dataMatch = data.filter(e => e.cz === d.id);
 
-      /* Tooltip */
-      tip.text(d.properties.name);
-      tip.style("visibility", "visible");
+        return colorScale(dataMatch[0][selectedVariable]);
+      });
 
-      /* Details on Demand */
-      let dataMatch = data.filter(e => e.state === d.properties.name);
-      const html = `
-        <table border="0" cellspacing="0" cellpadding="2">
-        <tbody>
-          <tr>
-            <th>${variableTitle}</th>
-            <td>${dataMatch[0][selectedVariable]}</td>
-          </tr>
-          <tr>
-            <th>Inventor:</th>
-            <td>${dataMatch[0].inventor}</td>
-          </tr>
-        </tbody>
-        </table>
-      `;
 
-      body.html(html);
-      details.style("visibility", "visible");
-    })
-    .on("mousemove.tooltip", function(d) {
 
-      /* Tooltip */
-      const coords = d3.mouse(g.basemap.node());
-      tip.attr("x", coords[0]);
-      tip.attr("y", coords[1]);
-    })
-    .on("mouseout", function(d) {
+      /* Interactivity */
+      commuterZones.on("mouseover", function(d) {
 
-      /* Highlight Neighborhoods */
-      d3.select(this).lower().classed("active", false);
+        /* Highlight Neighborhoods */
+        d3.select(this).raise().classed("active", true);
 
-      /* Tooltip */
-      tip.style("visibility", "hidden");
+        /* Tooltip */
+        tip.text(d.properties.name);
+        tip.style("visibility", "visible");
 
-      /* Details on Demand */
-      details.style("visibility", "hidden");
-    });
+        /* Details on Demand */
+        let dataMatch = data.filter(e => e.state === d.properties.name);
+        const html = `
+          <table border="0" cellspacing="0" cellpadding="2">
+          <tbody>
+            <tr>
+              <th>${variableTitle}</th>
+              <td>${dataMatch[0][selectedVariable]}</td>
+            </tr>
+            <tr>
+              <th>Inventor:</th>
+              <td>${dataMatch[0].inventor}</td>
+            </tr>
+          </tbody>
+          </table>
+        `;
+
+        body.html(html);
+        details.style("visibility", "visible");
+      })
+      .on("mousemove.tooltip", function(d) {
+
+        /* Tooltip */
+        const coords = d3.mouse(g.basemap.node());
+        tip.attr("x", coords[0]);
+        tip.attr("y", coords[1]);
+      })
+      .on("mouseout", function(d) {
+
+        /* Highlight Neighborhoods */
+        d3.select(this).lower().classed("active", false);
+
+        /* Tooltip */
+        tip.style("visibility", "hidden");
+
+        /* Details on Demand */
+        details.style("visibility", "hidden");
+      });
 }
 
 
@@ -294,6 +405,9 @@ function parseData(row){
 
   keep.state = row["par_state"];
   keep.stateAbbrv = row["par_stateabbrv"];
+
+  keep.cz = row["par_cz"];
+  keep.czname = row["par_czname"];
 
   return keep;
 }

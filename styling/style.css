@@ -71,6 +71,18 @@ th {
 }
 
 
+
+.cz {
+  stroke: black;
+  stroke-width: 1px;
+  fill: #EEE;
+}
+
+.cz:hover {
+  fill: #C00;
+}
+
+
 /*
 * Page Styling
 */
