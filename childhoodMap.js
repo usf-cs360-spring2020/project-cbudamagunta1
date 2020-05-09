@@ -6,7 +6,8 @@ var dataLoaded;
 
 const files = {
   basemap: "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json",
-  commutingZones: "datasets/czs_fips.json"
+  commutingZonesMap: "datasets/czs_fips.json",
+  commutingZonesData: "datasets/commuting_zones.csv"
 };
 
 const svg = d3.select("body").select("svg#Vis");
@@ -14,6 +15,7 @@ const svg = d3.select("body").select("svg#Vis");
 const g = {
   basemap: svg.select("g#basemap"),
   states: svg.select("g#states"),
+  counties: svg.select("g#counties"),
   cz: svg.select("g#cz"),
   tooltip: svg.select("g#tooltip"),
   details: svg.select("g#details"),
@@ -51,6 +53,7 @@ var colorScale = d3.scaleQuantize();
 
 
 var dataOptions = [
+  "Inventor",
   "Inventor - Parent Quintile 1",
   "Inventor - Parent Quintile 2",
   "Inventor - Parent Quintile 3",
@@ -84,6 +87,8 @@ if(variableTitle == "Inventor - Parent Quintile 1"){
   selectedVariable = "inventorPQ4";
 }else if (variableTitle == "Inventor - Parent Quintile 5") {
   selectedVariable = "inventorPQ5";
+}else if (variableTitle == "Inventor") {
+  selectedVariable = "inventor";
 };
 
 function onchange() {
@@ -99,6 +104,8 @@ function onchange() {
     selectedVariable = "inventorPQ4";
   }else if (variableTitle == "Inventor - Parent Quintile 5") {
     selectedVariable = "inventorPQ5";
+  }else if (variableTitle == "Inventor") {
+    selectedVariable = "inventor";
   };
 
   colorMap(dataLoaded);
@@ -109,9 +116,9 @@ function onchange() {
 * MAP PROJECTION
 */
 
-/* Set up projection */
 const projection = d3.geoAlbersUsa().scale(1300).translate([487.5, 305]);
-const path = d3.geoPath()// .projection(projection);
+const countryPath = d3.geoPath();
+const czPath = d3.geoPath();//.projection(projection);;
 
 
 /*
@@ -139,20 +146,22 @@ function colorMap(data) {
 
   let colorScheme;
   if(variableTitle == "Inventor - Parent Quintile 1"){
-    colorScheme = d3.schemePurples[9];
+    colorScheme = d3.schemeYlGnBu[9];
   }else if (variableTitle == "Inventor - Parent Quintile 2") {
-    colorScheme = d3.schemeOranges[9];
+    colorScheme = d3.schemeYlGnBu[9];
   }else if (variableTitle == "Inventor - Parent Quintile 3") {
-    colorScheme = d3.schemeBlues[9];
+    colorScheme = d3.schemeYlGnBu[9];
   }else if (variableTitle == "Inventor - Parent Quintile 4") {
-    colorScheme = d3.schemeGreens[9];
+    colorScheme = d3.schemeYlGnBu[9];
   }else if (variableTitle == "Inventor - Parent Quintile 5") {
-    colorScheme = d3.schemeBlues[9];
+    colorScheme = d3.schemeYlGnBu[9];
+  }else if (variableTitle == "Inventor") {
+    colorScheme = d3.schemeYlGnBu[9];
   };
 
   colorScale
     .domain([colorMin, colorMax])
-    .range(colorScheme)
+    .range(colorScheme);
 
   /* Draw country outline */
   d3.json(files.basemap).then(function(json) {
@@ -201,7 +210,7 @@ function drawLegend(){
 */
 
 /*
-* Draw the base map
+* Draw the country map
 */
 function drawBasemap(json, data) {
 
@@ -211,131 +220,30 @@ function drawBasemap(json, data) {
     const basemap = g.basemap.append("path")
       .attr("transform", "translate(30,120)")
       .datum(topojson.feature(json, json.objects.nation))
-      .attr("d", path)
+      .attr("d", countryPath)
       .attr("class", "land");
 
-      // /* Draw states */
-      // let statesData = topojson.feature(json, json.objects.states).features
-      // const states = g.states.selectAll("path.state")
-      //   .data(statesData)
-      //   .attr("id", "states")
-      //   .join("path")
-      //   .attr("transform", "translate(30,120)")
-      //     .attr("d", path)
-      //     .attr("class", "state")
-      //     .style("fill", function (d) {
-      //       let dataMatch = data.filter(e => e.state === d.properties.name);
-      //       return colorScale(dataMatch[0][selectedVariable]);
-      //     });
-      //
-      // /* Interactivity */
-      // states.on("mouseover", function(d) {
-      //
-      //   /* Highlight Neighborhoods */
-      //   d3.select(this).raise().classed("active", true);
-      //
-      //   /* Tooltip */
-      //   tip.text(d.properties.name);
-      //   tip.style("visibility", "visible");
-      //
-      //   /* Details on Demand */
-      //   let dataMatch = data.filter(e => e.state === d.properties.name);
-      //   const html = `
-      //     <table border="0" cellspacing="0" cellpadding="2">
-      //     <tbody>
-      //       <tr>
-      //         <th>${variableTitle}</th>
-      //         <td>${dataMatch[0][selectedVariable]}</td>
-      //       </tr>
-      //       <tr>
-      //         <th>Inventor:</th>
-      //         <td>${dataMatch[0].inventor}</td>
-      //       </tr>
-      //     </tbody>
-      //     </table>
-      //   `;
-      //
-      //   body.html(html);
-      //   details.style("visibility", "visible");
-      // })
-      // .on("mousemove.tooltip", function(d) {
-      //
-      //   /* Tooltip */
-      //   const coords = d3.mouse(g.basemap.node());
-      //   tip.attr("x", coords[0]);
-      //   tip.attr("y", coords[1]);
-      // })
-      // .on("mouseout", function(d) {
-      //
-      //   /* Highlight Neighborhoods */
-      //   d3.select(this).lower().classed("active", false);
-      //
-      //   /* Tooltip */
-      //   tip.style("visibility", "hidden");
-      //
-      //   /* Details on Demand */
-      //   details.style("visibility", "hidden");
-      // });
+      /* Draw states */
+      let statesData = topojson.feature(json, json.objects.states).features
+      const states = g.states.selectAll("path.state")
+        .data(statesData)
+        .attr("id", "states")
+        .join("path")
+        .attr("transform", "translate(30,120)")
+          .attr("d", countryPath)
+          .attr("class", "state")
+          .style("fill", function (d) {
+            let dataMatch = data.filter(e => e.state === d.properties.name);
 
-      /* Draw commuter zones */
-      d3.json(files.commutingZones).then(function(json) {
-        drawCommutingZones(json, data, basemapData);
-      })
-}
-
-
-
-
-
-function drawCommutingZones(json, data, basemapData){
-
-  console.log(json);
-
-  var cz_lookup = {};
-  var cz_ids = {};
-
-  json.forEach(function(d) {
-    cz_lookup[d.fips] = d.cz_id;
-    cz_ids[d.cz_id] = 1;
-  });
-
-  cz_lookup["46102"] = cz_lookup["46113"];
-
-  var commuting_zones = [];
-
-  d3.keys(cz_ids).forEach(function(cz_id) {
-    var commuting_zone = topojson.merge(basemapData, basemapData.objects.counties.geometries.filter(
-      function(d) {
-        return cz_lookup[d.id] == cz_id;
-      }));
-
-    commuting_zones.push(commuting_zone);
-  });
-
-  const commuterZones = g.cz
-    .attr("id", "czs")
-    .selectAll(".cz")
-    .data(commuting_zones)
-    .enter()
-      .append("path")
-      .attr("transform", "translate(30,120)")
-      .attr("class", "cz")
-      .attr("d", function(d) {
-        return path(d);
-      })
-      .style("fill", function (d) {
-
-        console.log("d: " + d);
-
-        let dataMatch = data.filter(e => e.cz === d.id);
-
-        return colorScale(dataMatch[0][selectedVariable]);
-      });
-
-
+            if(dataMatch[0][selectedVariable] >= 0){
+              return colorScale(dataMatch[0][selectedVariable]);
+            }else{
+              return "#9a9393";
+            }
+          });
 
       /* Interactivity */
-      commuterZones.on("mouseover", function(d) {
+      states.on("mouseover", function(d) {
 
         /* Highlight Neighborhoods */
         d3.select(this).raise().classed("active", true);
@@ -351,11 +259,11 @@ function drawCommutingZones(json, data, basemapData){
           <tbody>
             <tr>
               <th>${variableTitle}</th>
-              <td>${dataMatch[0][selectedVariable]}</td>
+              <td>${dataMatch[0][selectedVariable] ? dataMatch[0][selectedVariable] : "N/A"}</td>
             </tr>
             <tr>
               <th>Inventor:</th>
-              <td>${dataMatch[0].inventor}</td>
+              <td>${dataMatch[0].inventor ? dataMatch[0].inventor : "N/A"}</td>
             </tr>
           </tbody>
           </table>
@@ -382,7 +290,133 @@ function drawCommutingZones(json, data, basemapData){
         /* Details on Demand */
         details.style("visibility", "hidden");
       });
+
+      // /* Draw commuter zones */
+      // d3.json(files.commutingZonesMap).then(function(json) {
+      //   drawCommutingZones(json, data, basemapData);
+      // })
 }
+
+
+// /*
+// * Draw the commuting zones
+// */
+// function drawCommutingZones(json, data, basemapData){
+//
+//   var cz_lookup = {};
+//   var cz_ids = {};
+//
+//   json.forEach(function(d) {
+//     cz_lookup[d.fips] = d.cz_id;
+//     cz_ids[d.cz_id] = d.fips;
+//   });
+//
+//   cz_lookup["46102"] = cz_lookup["46113"];
+//
+//   var commuting_zones = [];
+//
+//   d3.keys(cz_ids).forEach(function(cz_id) {
+//     var commuting_zone = {
+//       geometry: null,
+//       id: null
+//     }
+//
+//     commuting_zone.geometry = topojson.merge(basemapData, basemapData.objects.counties.geometries.filter(
+//       function(d) {
+//         return cz_lookup[d.id] == cz_id;
+//       }));
+//
+//     commuting_zone.id = cz_ids[cz_id];
+//
+//     commuting_zones.push(commuting_zone);
+//   });
+//
+//   const commuterZones = g.cz
+//     .attr("id", "czs")
+//     .selectAll("path.cz")
+//     .data(commuting_zones)
+//     .enter()
+//       .append("path")
+//       .attr("transform", "translate(30,120)")
+//       .attr("class", "cz")
+//       .attr("d", function(d) {
+//         return czPath(d.geometry);
+//       })
+//       .style("fill", function (d) {
+//         let dataMatch = data.filter(e => {
+//           console.log(e.cz + " vs " + d.id)
+//           return e.cz === d.id
+//         });
+//
+//         return colorScale(dataMatch[0][selectedVariable]);
+//       });
+//
+//
+//     // var countiesData = topojson.feature(basemapData, basemapData.objects.counties).features;
+//     // const counties = g.counties.selectAll("path.county")
+//     //   .data(countiesData)
+//     //   .attr("id", "counties")
+//     //   .join("path")
+//     //   .attr("transform", "translate(30,120)")
+//     //     .attr("d", countryPath)
+//     //     .attr("class", "county")
+//     //     .style("fill", function (d) {
+//     //       let dataMatch = data.filter(e => e.state === d.properties.name);
+//     //       return colorScale(dataMatch[0][selectedVariable]);
+//     //     });
+//
+//
+//
+//
+//       /* Interactivity */
+//       counties.on("mouseover", function(d) {
+//
+//         /* Highlight Neighborhoods */
+//         d3.select(this).raise().classed("active", true);
+//
+//         /* Tooltip */
+//         tip.text(d.properties.name);
+//         tip.style("visibility", "visible");
+//
+//         /* Details on Demand */
+//         let dataMatch = data.filter(e => e.state === d.properties.name);
+//         const html = `
+//           <table border="0" cellspacing="0" cellpadding="2">
+//           <tbody>
+//             <tr>
+//               <th>${variableTitle}</th>
+//               <td>${dataMatch[0][selectedVariable]}</td>
+//             </tr>
+//             <tr>
+//               <th>Inventor:</th>
+//               <td>${dataMatch[0].inventor}</td>
+//             </tr>
+//           </tbody>
+//           </table>
+//         `;
+//
+//         body.html(html);
+//         details.style("visibility", "visible");
+//       })
+//       .on("mousemove.tooltip", function(d) {
+//
+//         /* Tooltip */
+//         const coords = d3.mouse(g.basemap.node());
+//         tip.attr("x", coords[0]);
+//         tip.attr("y", coords[1]);
+//       })
+//       .on("mouseout", function(d) {
+//
+//         /* Highlight Neighborhoods */
+//         d3.select(this).lower().classed("active", false);
+//
+//         /* Tooltip */
+//         tip.style("visibility", "hidden");
+//
+//         /* Details on Demand */
+//         details.style("visibility", "hidden");
+//       });
+// }
 
 
 /*
@@ -390,7 +424,7 @@ function drawCommutingZones(json, data, basemapData){
 */
 
 /*
-* Parse the data
+* Parse the dataset data
 */
 function parseData(row){
   let keep = {};
@@ -406,12 +440,11 @@ function parseData(row){
   keep.state = row["par_state"];
   keep.stateAbbrv = row["par_stateabbrv"];
 
-  keep.cz = row["par_cz"];
+  keep.cz = parseInt(row["par_cz"]);
   keep.czname = row["par_czname"];
 
   return keep;
 }
-
 
 /*
 * HELPER FUNCTIONS

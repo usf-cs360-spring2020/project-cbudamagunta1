@@ -14,7 +14,7 @@
 * Visualization Styling
 */
 
-svg {
+svg#Vis {
   background-color: lightBlue;
 }
 
@@ -46,14 +46,31 @@ path.land {
 
 path.state {
   fill: none;
+  stroke: green;
+  stroke-width: 0.5px;
+}
+
+/* path.cz {
+  fill: none;
+  stroke: white;
+  stroke-width: 1px;
+} */
+
+path.county {
+  fill: none;
   stroke: white;
   stroke-width: 1px;
 }
 
 .active {
+  stroke: #a33030 !important;
+  stroke-width: 2px !important;
+}
+
+/* .cz:hover {
   stroke: red !important;
   stroke-width: 1.5px !important;
-}
+} */
 
 circle.symbol {
   fill-opacity: 0.9;
@@ -68,18 +85,6 @@ table {
 
 th {
   text-align: right;
-}
-
-
-
-.cz {
-  stroke: black;
-  stroke-width: 1px;
-  fill: #EEE;
-}
-
-.cz:hover {
-  fill: #C00;
 }
 
 
