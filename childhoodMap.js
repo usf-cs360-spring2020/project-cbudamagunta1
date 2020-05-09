@@ -15,17 +15,9 @@ const svg = d3.select("body").select("svg#Vis");
 const g = {
   basemap: svg.select("g#basemap"),
   states: svg.select("g#states"),
-  tooltip: svg.select("g#tooltip"),
   details: svg.select("g#details"),
   legend: svg.select("g#legend")
 };
-
-/* Tooltip */
-const tip = g.tooltip.append("text").attr("id", "tooltip");
-tip.attr("text-anchor", "end");
-tip.attr("dx", -5);
-tip.attr("dy", -5);
-tip.style("visibility", "hidden");
 
 /* Details widgit */
 const details = g.details.append("foreignObject")
@@ -246,10 +238,6 @@ function drawBasemap(json, data) {
         /* Highlight Neighborhoods */
         d3.select(this).raise().classed("active", true);
 
-        /* Tooltip */
-        // tip.text(d.properties.name);
-        // tip.style("visibility", "visible");
-
         /* Details on Demand */
         let dataMatch = data.filter(e => e.state === d.properties.name);
         const html = `
@@ -274,20 +262,10 @@ function drawBasemap(json, data) {
         body.html(html);
         details.style("visibility", "visible");
       })
-      .on("mousemove.tooltip", function(d) {
-
-        /* Tooltip */
-        // const coords = d3.mouse(g.basemap.node());
-        // tip.attr("x", coords[0]);
-        // tip.attr("y", coords[1]);
-      })
       .on("mouseout", function(d) {
 
         /* Highlight Neighborhoods */
         d3.select(this).lower().classed("active", false);
-
-        /* Tooltip */
-        // tip.style("visibility", "hidden");
 
         /* Details on Demand */
         details.style("visibility", "hidden");
