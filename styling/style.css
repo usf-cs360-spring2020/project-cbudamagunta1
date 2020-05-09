@@ -20,10 +20,10 @@ svg#Vis {
 
 detail {
   background-color: white;
-  text-align: center;
+  text-align: left;
 
   font-family: sans-serif;
-  font-size: 9pt;
+  font-size: 10pt;
 }
 
 #tooltip {
@@ -31,7 +31,7 @@ detail {
   text-shadow: 0px 0px 2px white;
   font-size: 10pt;
 
-  fill: red;
+  fill: black;
   stroke: none;
 }
 

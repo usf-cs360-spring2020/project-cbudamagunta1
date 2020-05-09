@@ -15,8 +15,6 @@ const svg = d3.select("body").select("svg#Vis");
 const g = {
   basemap: svg.select("g#basemap"),
   states: svg.select("g#states"),
-  counties: svg.select("g#counties"),
-  cz: svg.select("g#cz"),
   tooltip: svg.select("g#tooltip"),
   details: svg.select("g#details"),
   legend: svg.select("g#legend")
@@ -125,7 +123,7 @@ const czPath = d3.geoPath();//.projection(projection);;
 * LOAD DATA
 */
 
-d3.csv("datasets/table_1a.csv", parseData).then(function(data) {
+d3.csv("datasets/table_1b.csv", parseData).then(function(data) {
   dataLoaded = data;
   colorMap(dataLoaded);
 });
@@ -141,6 +139,7 @@ d3.csv("datasets/table_1a.csv", parseData).then(function(data) {
 function colorMap(data) {
 
   let dataVariable = data.map(row => row[selectedVariable]);
+
   let colorMin = d3.min(dataVariable);
   let colorMax = d3.max(dataVariable);
 
@@ -210,7 +209,7 @@ function drawLegend(){
 */
 
 /*
-* Draw the country map
+* Draw the map
 */
 function drawBasemap(json, data) {
 
@@ -234,7 +233,6 @@ function drawBasemap(json, data) {
           .attr("class", "state")
           .style("fill", function (d) {
             let dataMatch = data.filter(e => e.state === d.properties.name);
-
             if(dataMatch[0][selectedVariable] >= 0){
               return colorScale(dataMatch[0][selectedVariable]);
             }else{
@@ -249,14 +247,18 @@ function drawBasemap(json, data) {
         d3.select(this).raise().classed("active", true);
 
         /* Tooltip */
-        tip.text(d.properties.name);
-        tip.style("visibility", "visible");
+        // tip.text(d.properties.name);
+        // tip.style("visibility", "visible");
 
         /* Details on Demand */
         let dataMatch = data.filter(e => e.state === d.properties.name);
         const html = `
           <table border="0" cellspacing="0" cellpadding="2">
           <tbody>
+            <tr>
+              <th>State:</th>
+              <td>${dataMatch[0].state}</td>
+            </tr>
             <tr>
               <th>${variableTitle}</th>
               <td>${dataMatch[0][selectedVariable] ? dataMatch[0][selectedVariable] : "N/A"}</td>
@@ -275,9 +277,9 @@ function drawBasemap(json, data) {
       .on("mousemove.tooltip", function(d) {
 
         /* Tooltip */
-        const coords = d3.mouse(g.basemap.node());
-        tip.attr("x", coords[0]);
-        tip.attr("y", coords[1]);
+        // const coords = d3.mouse(g.basemap.node());
+        // tip.attr("x", coords[0]);
+        // tip.attr("y", coords[1]);
       })
       .on("mouseout", function(d) {
 
@@ -285,7 +287,7 @@ function drawBasemap(json, data) {
         d3.select(this).lower().classed("active", false);
 
         /* Tooltip */
-        tip.style("visibility", "hidden");
+        // tip.style("visibility", "hidden");
 
         /* Details on Demand */
         details.style("visibility", "hidden");
@@ -314,8 +316,8 @@ function parseData(row){
   keep.state = row["par_state"];
   keep.stateAbbrv = row["par_stateabbrv"];
 
-  keep.cz = parseInt(row["par_cz"]);
-  keep.czname = row["par_czname"];
+  // keep.cz = parseInt(row["par_cz"]);
+  // keep.czname = row["par_czname"];
 
   return keep;
 }
