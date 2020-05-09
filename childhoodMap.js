@@ -159,37 +159,41 @@ function colorMap(data) {
     drawBasemap(json, data);
   });
 
-  drawLegend();
+  drawLegend(data);
 }
 
 /* LEGEND */
-function drawLegend(){
+function drawLegend(data){
 
   g.legend
     .attr("class", "legend")
-    .attr("transform", "translate(710,30)");
+    .attr("transform", "translate(690,30)");
 
   var legend = d3.legendColor()
     .labelFormat(d3.format(".3"))
     .title(variableTitle)
     .titleWidth(500)
     .scale(colorScale)
-    // .orient("horizontal")
-    .shapePadding(0)
-    .shapeWidth(30)
-    // .shapeHeight(30)
-    ;
+    .shapePadding(-3)
+    .shapeWidth(30);
 
 
-  // let states = d3.select("#states");
-  //
-  // legend.on("cellover", function(d) {
-  //     let dataMatch = data.filter(e => e.properties.name === d.);
-  //
-  //   })
-  //   .on("cellout", function(d) {
-  //
-  //   });
+  let states = d3.select("#states");
+
+  legend.on("cellover", function(d) {
+      let dataMatch = data.filter(e => colorScale(e[selectedVariable]) === d)
+      let num = dataMatch.length;
+      for(var i=0; i<num; i++){
+        d3.select("#" + dataMatch[i].stateAbbrv).raise().classed("active", true);
+      }
+    })
+    .on("cellout", function(d) {
+      let dataMatch = data.filter(e => colorScale(e[selectedVariable]) === d)
+      let num = dataMatch.length;
+      for(var i=0; i<num; i++){
+        d3.select("#" + dataMatch[i].stateAbbrv).lower().classed("active", false);;
+      }
+    });
 
   g.legend
     .call(legend);
@@ -223,6 +227,12 @@ function drawBasemap(json, data) {
         .attr("transform", "translate(30,120)")
           .attr("d", countryPath)
           .attr("class", "state")
+
+          .attr("id", function (d) {
+            let dataMatch = data.filter(e => e.state === d.properties.name);
+            return dataMatch[0].stateAbbrv;
+          })
+
           .style("fill", function (d) {
             let dataMatch = data.filter(e => e.state === d.properties.name);
             if(dataMatch[0][selectedVariable] >= 0){
@@ -293,9 +303,6 @@ function parseData(row){
 
   keep.state = row["par_state"];
   keep.stateAbbrv = row["par_stateabbrv"];
-
-  // keep.cz = parseInt(row["par_cz"]);
-  // keep.czname = row["par_czname"];
 
   return keep;
 }
