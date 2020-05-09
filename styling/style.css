@@ -50,12 +50,6 @@ path.state {
   stroke-width: 0.5px;
 }
 
-/* path.cz {
-  fill: none;
-  stroke: white;
-  stroke-width: 1px;
-} */
-
 path.county {
   fill: none;
   stroke: white;
@@ -66,11 +60,6 @@ path.county {
   stroke: #a33030 !important;
   stroke-width: 2px !important;
 }
-
-/* .cz:hover {
-  stroke: red !important;
-  stroke-width: 1.5px !important;
-} */
 
 circle.symbol {
   fill-opacity: 0.9;
