@@ -101,11 +101,14 @@
 
         <hr>
 
+        <h2>Innovation Rates based on Parent Quintile, Gender, and Childhood State of Residence</h2>
 
-        <h2>[Title]</h2>
-
-        <h3>Question</h3>
-        <p>Description: what type of visualizations</p>
+        <h3>Purpose</h3>
+        <p>This choropleth maps looks at the specific distribution of innovation rates for different states based on the selected variable,
+          providing a closer look at how these rates change dependant on different factors. The additional information also
+          allows for comparison between all factors to see which contribute to the highest rates. This is an exploratory
+          visualization to further look into what most affects one's likelihood of becoming an inventor, to therefore understand
+          what support needs to be provided to those who do not have those advantages.</p>
 
         <h3>Encoding</h3>
         <p>Encoding: Explain to general users how your data is encoded and how to interpret your visualization(s).</p>
@@ -113,6 +116,28 @@
         <p>Quantile scale coloring - broken up into categories</p>
         <p>Color encodes which bracket of values that state's values fall under for the selected variable. Darker colors mean
           higher values.</p>
+
+        <h4>Dataset Used:</h4>
+        <p><strong>Origins of Inventors: Innovation Rates by Childhood State, Gender, and Parent Income</strong></p>
+
+        <h4>Columns:</h4>
+        <p>
+        <ul>
+          <li><strong>inventor:</strong> share of children overall who go on to become inventors</li>
+          <li><strong>inventor_g_m:</strong> same as <strong>inventor</strong> but restricted to males</li>
+          <li><strong>inventor_g_f:</strong> same as <strong>inventor</strong> but restricted to females</li>
+          <li><strong>inventor_pq_1:</strong>same as <strong>inventor</strong> but restricted to children whose
+              parental income is in quintile 1 of the parent income distribution of the children's birth cohort</li>
+          <li><strong>inventor_pq_2:</strong>same as <strong>inventor</strong> but restricted to children whose
+              parental income is in quintile 2 of the parent income distribution of the children's birth cohort</li>
+          <li><strong>inventor_pq_3:</strong>same as <strong>inventor</strong> but restricted to children whose
+              parental income is in quintile 3 of the parent income distribution of the children's birth cohort</li>
+          <li><strong>inventor_pq_4:</strong>same as <strong>inventor</strong> but restricted to children whose
+              parental income is in quintile 4 of the parent income distribution of the children's birth cohort</li>
+          <li><strong>inventor_pq_5:</strong>same as <strong>inventor</strong> but restricted to children whose
+              parental income is in quintile 5 of the parent income distribution of the children's birth cohort</li>
+        </ul>
+        </p>
 
         <h3>Interactivity</h3>
 
@@ -141,6 +166,10 @@
           <g id="states"></g>
           <g id="details" pointer-events="none"></g>
           <g id="legend"></g>
+
+          <g id="bar"></g>
+          <g id="barX"></g>
+          <g id="barY"></g>
         </svg>
 
         <p id="caption"><strong>Chaitrika Budamagunta</strong><br>

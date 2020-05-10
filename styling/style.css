@@ -76,6 +76,14 @@ th {
   text-align: right;
 }
 
+#axis-title {
+  font-size: 9px;
+}
+
+#x-axis-barline {
+  font-size: 9px;
+}
+
 
 /*
 * Page Styling
