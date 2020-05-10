@@ -21,9 +21,7 @@ const g = {
   details: svg.select("g#details"),
   legend: svg.select("g#legend"),
 
-  bar: svg.select("g#bar"),
-  barX: svg.select("g#barX"),
-  barY: svg.select("g#barY")
+  bar: svg.select("g#bar")
 };
 
 
@@ -261,9 +259,6 @@ function drawBasemap(json, data) {
 
       /* Draw Bar Chart*/
       drawBarChart(d, data);
-      d3.select("g#bar").style("visibility", "visible");
-      d3.select("g#barX").style("visibility", "visible");
-      d3.select("g#barY").style("visibility", "hidden");
 
       /* Highlight Neighborhoods */
       d3.select(this).raise().classed("active", true);
@@ -293,31 +288,16 @@ function drawBasemap(json, data) {
       details.style("visibility", "visible");
     })
     .on("mousemove", function(d) {
+
       /* Draw Bar Chart*/
-      d3.select("g#bar").selectAll("text").remove();
-      d3.select("g#bar").selectAll("rect").remove();
-
-      d3.select("g#barX").selectAll("text").remove();
-      d3.select("g#barX").selectAll("x-axis-barline").remove();
-
-      d3.select("g#barY").selectAll("text").remove();
-      d3.select("g#barY").selectAll("y-axis-barline").remove();
-
-
-
+      d3.select("g#bar").selectAll("*").remove();
       drawBarChart(d, data);
+
     })
     .on("mouseout", function(d) {
 
       /* Draw Bar Chart*/
-      d3.select("g#bar").selectAll("text").remove();
-      d3.select("g#bar").selectAll("rect").remove();
-
-      d3.select("g#barX").selectAll("text").remove();
-      d3.select("g#barX").selectAll("x-axis-barline").remove();
-
-      d3.select("g#barY").selectAll("text").remove();
-      d3.select("g#barY").selectAll("y-axis-barline").remove();
+      d3.select("g#bar").selectAll("*").remove();
 
       /* Highlight Neighborhoods */
       d3.select(this).lower().classed("active", false);
@@ -328,18 +308,6 @@ function drawBasemap(json, data) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 * BAR CHART
 */
@@ -347,6 +315,7 @@ function drawBasemap(json, data) {
 /* Draw the Bar Chart */
 function drawBarChart(state, data) {
 
+  /* Get Data Match */
   let dataMatch = data.filter(e => e.state === state.properties.name);
   let barGroups = [
     "inventor",
@@ -358,69 +327,6 @@ function drawBarChart(state, data) {
     "male",
     "female"
   ];
-
-  let dataMax = dataMatch[0].inventor;
-  let dataMin = 0;
-
-  /* Set Up Plot */
-  const barPlot = g.bar
-    .attr("id", "bar")
-    .attr("transform", "translate(300,80)");
-
-  const barScales = {
-    x: d3.scaleBand(),
-    y: d3.scaleLinear(),
-  };
-
-  let barPlotWidth = 300;
-  let barPlotHeight = 50;
-
-  barScales.x.range([0, 100]);
-
-  barScales.y
-      .domain([dataMin, dataMax])
-      .range([barPlotHeight, 0])
-      .nice();
-
-  let yGroup = g.barY.attr("id", "y-axis-barline").attr('class', 'axis');
-  let yAxis = d3.axisLeft(barScales.y);
-
-  yAxis.ticks(5, '0.3%').tickSizeOuter(0);
-  yGroup.call(yAxis);
-
-
-  /* Draw Titles */
-  // let xMiddle = 300 + midpoint(barScales.x.range());
-  // let yMiddle = 20 + midpoint(barScales.y.range());
-  //
-  // let yTitle = barPlot.append('text')
-  //   .attr('transform', translate(250, yMiddle))
-  //   .attr('class', 'axis-title')
-  //   .attr('id', 'axis-title')
-  //   .text('Inventor Rate');
-  //
-  // yTitle.attr('x', -50);
-  // yTitle.attr('y', -50);
-  //
-  // yTitle.attr('dy', 15);
-  // yTitle.attr('text-anchor', 'middle');
-  // yTitle.attr('transform', 'rotate(-90)');
-
-
-  /* DRAW AXIS */
-  barScales.x.domain(barGroups);
-
-  let xGroup = g.barX.attr("id", "x-axis-barline").attr('class', 'axis');
-  let xAxis = d3.axisBottom(barScales.x).tickPadding(0).tickSizeOuter(0);
-
-  xGroup.attr('transform', translate(300, barPlotHeight));
-  xGroup.call(xAxis)
-    .selectAll("text")
-      .attr("y", 4)
-      .attr("x", -5)
-      .attr("dy", ".35em")
-      .attr("transform", "rotate(-90)")
-      .style("text-anchor", "end");
 
 
   /* Set Up Bar Data */
@@ -460,8 +366,73 @@ function drawBarChart(state, data) {
   ];
 
 
+  let dataMax = d3.max(barData.values()).value;
+  let dataMin = 0;
+
+  /* Set Up Plot */
+  const barPlot = g.bar
+    .attr("id", "bar")
+    .attr("transform", "translate(400,50)");
+
+  const barScales = {
+    x: d3.scaleBand(),
+    y: d3.scaleLinear(),
+  };
+
+  let barPlotWidth = 200;
+  let barPlotHeight = 50;
+
+  barScales.x.range([0, 180]);
+
+  barScales.y
+      .domain([dataMin, dataMax])
+      .range([barPlotHeight, 0])
+      .nice();
+
+  let yGroup = g.bar.append('g').attr("id", "y-axis-barline")
+    .attr('class', 'axis');
+
+  let yAxis = d3.axisLeft(barScales.y);
+
+  yAxis.ticks(5, '0.3%');
+  yGroup.call(yAxis);
+
+
+  /* Draw Titles */
+  let xMiddle = 300 + midpoint(barScales.x.range());
+  let yMiddle = 20 + midpoint(barScales.y.range());
+
+  let yTitle = g.bar.append('text')
+    .attr('transform', translate(250, yMiddle))
+    .attr('class', 'axis-title')
+    .attr('id', 'axis-title')
+    .text('Inventor Rate');
+
+  yTitle.attr('x', -10);
+  yTitle.attr('y', -65);
+
+  yTitle.attr('dy', 15);
+  yTitle.attr('text-anchor', 'middle');
+  yTitle.attr('transform', 'rotate(-90)');
+
+
+  /* DRAW AXIS */
+  barScales.x.domain(barGroups);
+
+  let xGroup = g.bar.append('g').attr("id", "x-axis-barline").attr('class', 'axis');
+  let xAxis = d3.axisBottom(barScales.x).tickPadding(0).tickSizeOuter(0);
+
+  xGroup.attr('transform', translate(0, barPlotHeight));
+  xGroup.call(xAxis)
+    .selectAll("text")
+      .attr("y", 4)
+      .attr("x", -5)
+      .attr("dy", ".35em")
+      .attr("transform", "rotate(-90)")
+      .style("text-anchor", "end");
+
   /* Bar Chart */
-  const bars = g.bar
+  const bars = g.bar.append('g')
     .selectAll("rect")
     .attr("id", "bars")
     .data(barData)
@@ -472,73 +443,8 @@ function drawBarChart(state, data) {
       .attr("y", d => barScales.y(d.value))
       .attr("width", barScales.x.bandwidth() - 3)
       .attr("height", d => barPlotHeight - barScales.y(d.value))
-      // .style("fill", "#a3c7e1");
-
-    // .append("rect")
-    //   .attr("x", (barScales.x("inventor") + (barScales.x.bandwidth() / 2)))
-    //   .attr("y", barScales.y(dataMatch[0].inventor))
-    //   .attr("width", barScales.x.bandwidth() - 3)
-    //   .attr("height", barPlotHeight - barScales.y(dataMatch[0].inventor));
-    //
-    // .append("rect")
-    //   .attr("x", (barScales.x("inventorPQ1") + (barScales.x.bandwidth() / 2)))
-    //   .attr("y", barScales.y(dataMatch[0].inventorPQ1))
-    //   .attr("width", barScales.x.bandwidth() - 3)
-    //   .attr("height", barPlotHeight - barScales.y(dataMatch[0].inventorPQ1))
-    //
-    // .append("rect")
-    //   .attr("x", (barScales.x("inventorPQ2") + (barScales.x.bandwidth() / 2)))
-    //   .attr("y", barScales.y(dataMatch[0].inventorPQ2))
-    //   .attr("width", barScales.x.bandwidth() - 3)
-    //   .attr("height", barPlotHeight - barScales.y(dataMatch[0].inventorPQ2))
-    //
-    // .append("rect")
-    //   .attr("x", (barScales.x("inventorPQ3") + (barScales.x.bandwidth() / 2)))
-    //   .attr("y", barScales.y(dataMatch[0].inventorPQ3))
-    //   .attr("width", barScales.x.bandwidth() - 3)
-    //   .attr("height", barPlotHeight - barScales.y(dataMatch[0].inventorPQ3))
-    //
-    // .append("rect")
-    //   .attr("x", (barScales.x("inventorPQ4") + (barScales.x.bandwidth() / 2)))
-    //   .attr("y", barScales.y(dataMatch[0].inventorPQ4))
-    //   .attr("width", barScales.x.bandwidth() - 3)
-    //   .attr("height", barPlotHeight - barScales.y(dataMatch[0].inventorPQ4))
-    //
-    // .append("rect")
-    //   .attr("x", (barScales.x("inventorPQ5") + (barScales.x.bandwidth() / 2)))
-    //   .attr("y", barScales.y(dataMatch[0].inventorPQ5))
-    //   .attr("width", barScales.x.bandwidth() - 3)
-    //   .attr("height", barPlotHeight - barScales.y(dataMatch[0].inventorPQ5))
-    //
-    // .append("rect")
-    //   .attr("x", (barScales.x("male") + (barScales.x.bandwidth() / 2)))
-    //   .attr("y", barScales.y(dataMatch[0].male))
-    //   .attr("width", barScales.x.bandwidth() - 3)
-    //   .attr("height", barPlotHeight - barScales.y(dataMatch[0].male))
-    //
-    // .append("rect")
-    //   .attr("x", (barScales.x("female") + (barScales.x.bandwidth() / 2)))
-    //   .attr("y", barScales.y(dataMatch[0].female))
-    //   .attr("width", barScales.x.bandwidth() - 3)
-    //   .attr("height", barPlotHeight - barScales.y(dataMatch[0].female));
+      .style("fill", "pink");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
@@ -562,8 +468,8 @@ function parseData(row){
   keep.state = row["par_state"];
   keep.stateAbbrv = row["par_stateabbrv"];
 
-  keep.male = row["inventor_g_m"];
-  keep.female = row["inventor_g_f"];
+  keep.male = parseFloat(row["inventor_g_m"]);
+  keep.female = parseFloat(row["inventor_g_f"]);
 
   return keep;
 }
