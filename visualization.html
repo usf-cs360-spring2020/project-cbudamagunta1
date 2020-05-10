@@ -110,8 +110,16 @@
         <h3>Encoding</h3>
         <p>Encoding: Explain to general users how your data is encoded and how to interpret your visualization(s).</p>
 
+        <p>Quantile scale coloring - broken up into categories</p>
+        <p>Color encodes which bracket of values that state's values fall under for the selected variable. Darker colors mean
+          higher values.</p>
+
         <h3>Interactivity</h3>
-        <p>Interactivity: Explain to general users how to interact with your visualization(s).</p>
+
+        <p>Brushing: Hovering over a cell on the legend will highlight all states that fall under that category.</p>
+        <p>Highlighting when hovering over a state.</p>
+        <p>Details-on-Demand: Hovering over a state will display information about that state.</p>
+        <p>Filtering: Choose the shown dataset using the dropdown at the top.</p>
 
 
 
@@ -128,7 +136,7 @@
         <label for="dataSet">Choose the Data Variable to Display:</label>
         <select id="dataSet"></select>
 
-        <svg id="Vis" width="1200" height="750">
+        <svg id="Vis" width="1015" height="720">
           <g id="basemap" pointer-events="none"></g>
           <g id="states"></g>
           <g id="details" pointer-events="none"></g>
