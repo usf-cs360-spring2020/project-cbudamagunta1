@@ -23,13 +23,13 @@ detail {
   text-align: left;
 
   font-family: sans-serif;
-  font-size: 10pt;
+  font-size: 9pt;
 }
 
 #tooltip {
   font-weight: 600;
   text-shadow: 0px 0px 2px white;
-  font-size: 10pt;
+  font-size: 9pt;
 
   fill: black;
   stroke: none;

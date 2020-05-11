@@ -28,7 +28,7 @@ const g = {
 /* Details widgit */
 const details = g.details.append("foreignObject")
   .attr("id", "details")
-  .attr("width", 200)
+  .attr("width", 280)
   .attr("height", 600)
   .attr("x", 20)
   .attr("y", 10);
@@ -55,7 +55,9 @@ var dataOptions = [
   "Inventor - Parent Quintile 2",
   "Inventor - Parent Quintile 3",
   "Inventor - Parent Quintile 4",
-  "Inventor - Parent Quintile 5"
+  "Inventor - Parent Quintile 5",
+  "Inventor - Female",
+  "Inventor - Male"
 ]
 
 var selectedVariable;
@@ -88,7 +90,12 @@ if(variableTitle == "Inventor - Parent Quintile 1"){
   selectedVariable = "inventorPQ5";
 }else if (variableTitle == "Inventor") {
   selectedVariable = "inventor";
+}else if (variableTitle == "Inventor - Female") {
+  selectedVariable = "female";
+}else if (variableTitle == "Inventor - Male") {
+  selectedVariable = "male";
 };
+
 
 
 /* When Selection Changes */
@@ -107,6 +114,10 @@ function onchange() {
     selectedVariable = "inventorPQ5";
   }else if (variableTitle == "Inventor") {
     selectedVariable = "inventor";
+  }else if (variableTitle == "Inventor - Female") {
+    selectedVariable = "female";
+  }else if (variableTitle == "Inventor - Male") {
+    selectedVariable = "male";
   };
 
   colorMap();
@@ -145,20 +156,7 @@ function colorMap() {
   let colorMin = d3.min(dataVariable);
   let colorMax = d3.max(dataVariable);
 
-  let colorScheme;
-  if(variableTitle == "Inventor - Parent Quintile 1"){
-    colorScheme = d3.schemeYlGnBu[9];
-  }else if (variableTitle == "Inventor - Parent Quintile 2") {
-    colorScheme = d3.schemeYlGnBu[9];
-  }else if (variableTitle == "Inventor - Parent Quintile 3") {
-    colorScheme = d3.schemeYlGnBu[9];
-  }else if (variableTitle == "Inventor - Parent Quintile 4") {
-    colorScheme = d3.schemeYlGnBu[9];
-  }else if (variableTitle == "Inventor - Parent Quintile 5") {
-    colorScheme = d3.schemeYlGnBu[9];
-  }else if (variableTitle == "Inventor") {
-    colorScheme = d3.schemeYlGnBu[9];
-  };
+  let colorScheme = d3.schemeYlGnBu[9];
 
   colorScale
     .domain([colorMin, colorMax])
@@ -178,10 +176,10 @@ function drawLegend(){
 
   g.legend
     .attr("class", "legend")
-    .attr("transform", "translate(700,30)");
+    .attr("transform", "translate(720,30)");
 
   var legend = d3.legendColor()
-    .labelFormat(d3.format(".3%"))
+    .labelFormat(d3.format(".4%"))
     .title(variableTitle)
     .titleWidth(500)
     .scale(colorScale)
@@ -278,8 +276,8 @@ function drawBasemap(json) {
             <td>${dataMatch[0][selectedVariable] ? dataMatch[0][selectedVariable] : "N/A"}</td>
           </tr>
           <tr>
-            <th>Inventor:</th>
-            <td>${dataMatch[0].inventor ? dataMatch[0].inventor : "N/A"}</td>
+            <th>Kid Count:</th>
+            <td>${dataMatch[0].kid ? dataMatch[0].kid : "N/A"}</td>
           </tr>
         </tbody>
         </table>
@@ -384,7 +382,7 @@ function drawBarChart(state) {
   /* Set Up Plot */
   const barPlot = g.bar
     .attr("id", "bar")
-    .attr("transform", "translate(380,20)");
+    .attr("transform", "translate(400,30)");
 
   const barScales = {
     x: d3.scaleBand(),
@@ -398,14 +396,15 @@ function drawBarChart(state) {
 
   barScales.y
       .domain([dataMin, dataMax])
-      .range([barPlotHeight, 0]);
+      .range([barPlotHeight, 0])
+      .nice();
 
   let yGroup = g.bar.append('g').attr("id", "y-axis-barline")
     .attr('class', 'axis');
 
   let yAxis = d3.axisLeft(barScales.y);
 
-  yAxis.ticks(5, '0.3%');
+  yAxis.ticks(5, '0.4%');
   yGroup.call(yAxis);
 
 
@@ -420,7 +419,7 @@ function drawBarChart(state) {
     .text('Inventor Rate');
 
   yTitle.attr('x', -40);
-  yTitle.attr('y', -65);
+  yTitle.attr('y', -75);
 
   yTitle.attr('dy', 15);
   yTitle.attr('text-anchor', 'middle');
@@ -483,6 +482,8 @@ function parseData(row){
 
   keep.male = parseFloat(row["inventor_g_m"]);
   keep.female = parseFloat(row["inventor_g_f"]);
+
+  keep.kid = parseInt(row["kid_count"]);
 
   return keep;
 }
