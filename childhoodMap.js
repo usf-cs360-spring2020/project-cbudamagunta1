@@ -109,7 +109,7 @@ function onchange() {
     selectedVariable = "inventor";
   };
 
-  colorMap(dataLoaded);
+  colorMap();
 };
 
 
@@ -127,7 +127,7 @@ const path = d3.geoPath();
 
 d3.csv("datasets/table_1b.csv", parseData).then(function(data) {
   dataLoaded = data;
-  colorMap(dataLoaded);
+  colorMap();
 });
 
 
@@ -138,9 +138,9 @@ d3.csv("datasets/table_1b.csv", parseData).then(function(data) {
 /*
 * Set up color scale and trigger map drawing
 */
-function colorMap(data) {
+function colorMap() {
 
-  let dataVariable = data.map(row => row[selectedVariable]);
+  let dataVariable = dataLoaded.map(row => row[selectedVariable]);
 
   let colorMin = d3.min(dataVariable);
   let colorMax = d3.max(dataVariable);
@@ -166,14 +166,15 @@ function colorMap(data) {
 
   /* Draw country outline */
   d3.json(files.basemap).then(function(json) {
-    drawBasemap(json, data);
+    drawBasemap(json);
   });
 
-  drawLegend(data);
+  drawLegend();
 }
 
+
 /* LEGEND */
-function drawLegend(data){
+function drawLegend(){
 
   g.legend
     .attr("class", "legend")
@@ -195,14 +196,14 @@ function drawLegend(data){
   let states = d3.select("#states");
 
   legend.on("cellover", function(d) {
-      let dataMatch = data.filter(e => colorScale(e[selectedVariable]) === d)
+      let dataMatch = dataLoaded.filter(e => colorScale(e[selectedVariable]) === d)
       let num = dataMatch.length;
       for(var i=0; i<num; i++){
         d3.select("#" + dataMatch[i].stateAbbrv).raise().classed("active", true);
       }
     })
     .on("cellout", function(d) {
-      let dataMatch = data.filter(e => colorScale(e[selectedVariable]) === d)
+      let dataMatch = dataLoaded.filter(e => colorScale(e[selectedVariable]) === d)
       let num = dataMatch.length;
       for(var i=0; i<num; i++){
         d3.select("#" + dataMatch[i].stateAbbrv).lower().classed("active", false);;
@@ -218,7 +219,7 @@ function drawLegend(data){
 /*
 * Draw the map
 */
-function drawBasemap(json, data) {
+function drawBasemap(json) {
 
   let basemapData = json;
 
@@ -240,12 +241,12 @@ function drawBasemap(json, data) {
       .attr("class", "state")
 
       .attr("id", function (d) {
-        let dataMatch = data.filter(e => e.state === d.properties.name);
+        let dataMatch = dataLoaded.filter(e => e.state === d.properties.name);
         return dataMatch[0].stateAbbrv;
       })
 
       .style("fill", function (d) {
-        let dataMatch = data.filter(e => e.state === d.properties.name);
+        let dataMatch = dataLoaded.filter(e => e.state === d.properties.name);
         if(dataMatch[0][selectedVariable] >= 0){
           return colorScale(dataMatch[0][selectedVariable]);
         }else{
@@ -258,13 +259,13 @@ function drawBasemap(json, data) {
     states.on("mouseover", function(d) {
 
       /* Draw Bar Chart*/
-      drawBarChart(d, data);
+      drawBarChart(d);
 
       /* Highlight Neighborhoods */
       d3.select(this).raise().classed("active", true);
 
       /* Details on Demand */
-      let dataMatch = data.filter(e => e.state === d.properties.name);
+      let dataMatch = dataLoaded.filter(e => e.state === d.properties.name);
       const html = `
         <table border="0" cellspacing="0" cellpadding="2">
         <tbody>
@@ -291,7 +292,7 @@ function drawBasemap(json, data) {
 
       /* Draw Bar Chart*/
       d3.select("g#bar").selectAll("*").remove();
-      drawBarChart(d, data);
+      drawBarChart(d, dataLoaded);
 
     })
     .on("mouseout", function(d) {
@@ -313,10 +314,10 @@ function drawBasemap(json, data) {
 */
 
 /* Draw the Bar Chart */
-function drawBarChart(state, data) {
+function drawBarChart(state) {
 
   /* Get Data Match */
-  let dataMatch = data.filter(e => e.state === state.properties.name);
+  let dataMatch = dataLoaded.filter(e => e.state === state.properties.name);
   let barGroups = [
     "inventor",
     "inventorPQ1",
@@ -326,6 +327,17 @@ function drawBarChart(state, data) {
     "inventorPQ5",
     "male",
     "female"
+  ];
+
+  let barValues = [
+    dataMatch[0].inventor,
+    dataMatch[0].inventorPQ1,
+    dataMatch[0].inventorPQ2,
+    dataMatch[0].inventorPQ3,
+    dataMatch[0].inventorPQ4,
+    dataMatch[0].inventorPQ5,
+    dataMatch[0].male,
+    dataMatch[0].female
   ];
 
 
@@ -366,28 +378,27 @@ function drawBarChart(state, data) {
   ];
 
 
-  let dataMax = d3.max(barData.values()).value;
+  let dataMax = d3.max(barValues);
   let dataMin = 0;
 
   /* Set Up Plot */
   const barPlot = g.bar
     .attr("id", "bar")
-    .attr("transform", "translate(400,50)");
+    .attr("transform", "translate(380,20)");
 
   const barScales = {
     x: d3.scaleBand(),
     y: d3.scaleLinear(),
   };
 
-  let barPlotWidth = 200;
-  let barPlotHeight = 50;
+  let barPlotWidth = 250;
+  let barPlotHeight = 70;
 
-  barScales.x.range([0, 180]);
+  barScales.x.rangeRound([0, barPlotWidth]);
 
   barScales.y
       .domain([dataMin, dataMax])
-      .range([barPlotHeight, 0])
-      .nice();
+      .range([barPlotHeight, 0]);
 
   let yGroup = g.bar.append('g').attr("id", "y-axis-barline")
     .attr('class', 'axis');
@@ -408,7 +419,7 @@ function drawBarChart(state, data) {
     .attr('id', 'axis-title')
     .text('Inventor Rate');
 
-  yTitle.attr('x', -10);
+  yTitle.attr('x', -40);
   yTitle.attr('y', -65);
 
   yTitle.attr('dy', 15);
@@ -431,19 +442,21 @@ function drawBarChart(state, data) {
       .attr("transform", "rotate(-90)")
       .style("text-anchor", "end");
 
+
   /* Bar Chart */
-  const bars = g.bar.append('g')
+  const barLineGroup = g.bar.append('g').attr('id', 'barline');
+  const bars = barLineGroup
     .selectAll("rect")
     .attr("id", "bars")
     .data(barData)
     .enter()
     .append("rect")
       .attr("class", d => d.group)
-      .attr("x", d => (barScales.x(d.group) + (barScales.x.bandwidth() / 2)))
+      .attr("x", d => (barScales.x(d.group)) + 3)
       .attr("y", d => barScales.y(d.value))
       .attr("width", barScales.x.bandwidth() - 3)
       .attr("height", d => barPlotHeight - barScales.y(d.value))
-      .style("fill", "pink");
+      .style("fill", "#145649");
 }
 
 
