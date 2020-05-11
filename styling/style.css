@@ -96,3 +96,11 @@ p#caption {
 p#buttons {
   font-family: sans-serif;
 }
+
+/*
+* Final Video
+*/
+#demo {
+  height: 500px;
+  width: 960px;
+}
