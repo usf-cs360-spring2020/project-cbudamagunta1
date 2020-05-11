@@ -101,52 +101,70 @@
 
         <hr>
 
-        <h2>Innovation Rates based on Parent Quintile, Gender, and Childhood State of Residence</h2>
+        <h2>Innovation Rates per State dependant on Parent Quintile and Gender</h2>
 
         <h3>Purpose</h3>
-        <p>This choropleth maps looks at the specific distribution of innovation rates for different states based on the selected variable,
-          providing a closer look at how these rates change dependant on different factors. The additional information also
+        <p>This choropleth map looks at the specific distribution of innovation rates for different states based on the selected variable,
+          providing a closer look at how these rates change dependant on different factors. The bar chart
           allows for comparison between all factors to see which contribute to the highest rates. This is an exploratory
           visualization to further look into what most affects one's likelihood of becoming an inventor, to therefore understand
           what support needs to be provided to those who do not have those advantages.</p>
 
-        <h3>Encoding</h3>
-        <p>Encoding: Explain to general users how your data is encoded and how to interpret your visualization(s).</p>
 
-        <p>Quantile scale coloring - broken up into categories</p>
-        <p>Color encodes which bracket of values that state's values fall under for the selected variable. Darker colors mean
-          higher values.</p>
+        <h3>Encoding</h3>
+          <p>The map uses a quantile color scale to encode the inventor rate based on the selected variable per state. Darker colors indicate
+          higher rates.</p>
+
+        <p>The bar chart, shown when hovering over a state, displays the rate across all variables for the highlighted state.
+          Taller bars indicate higher rates.</p><br>
 
         <h4>Dataset Used:</h4>
         <p><strong>Origins of Inventors: Innovation Rates by Childhood State, Gender, and Parent Income</strong></p>
 
+        <p>There was no wrangling of the data needed.</p>
+
+        <p class="buttons"><a class="button is-medium is-danger is-light is-outlined" href="data.html">
+            <span>See Data page for more info</span>
+          </a>
+        </p>
+
         <h4>Columns:</h4>
         <p>
-        <ul>
-          <li><strong>inventor:</strong> share of children overall who go on to become inventors</li>
-          <li><strong>inventor_g_m:</strong> same as <strong>inventor</strong> but restricted to males</li>
-          <li><strong>inventor_g_f:</strong> same as <strong>inventor</strong> but restricted to females</li>
-          <li><strong>inventor_pq_1:</strong>same as <strong>inventor</strong> but restricted to children whose
-              parental income is in quintile 1 of the parent income distribution of the children's birth cohort</li>
-          <li><strong>inventor_pq_2:</strong>same as <strong>inventor</strong> but restricted to children whose
-              parental income is in quintile 2 of the parent income distribution of the children's birth cohort</li>
-          <li><strong>inventor_pq_3:</strong>same as <strong>inventor</strong> but restricted to children whose
-              parental income is in quintile 3 of the parent income distribution of the children's birth cohort</li>
-          <li><strong>inventor_pq_4:</strong>same as <strong>inventor</strong> but restricted to children whose
-              parental income is in quintile 4 of the parent income distribution of the children's birth cohort</li>
-          <li><strong>inventor_pq_5:</strong>same as <strong>inventor</strong> but restricted to children whose
-              parental income is in quintile 5 of the parent income distribution of the children's birth cohort</li>
-        </ul>
+          <ul>
+            <li><strong>par_state:</strong> childhood state of residence</li>
+            <li><strong>par_stateabbrv:</strong> state abbreviation</li>
+
+            <li><strong>inventor:</strong> share of children overall who go on to become inventors</li>
+
+            <li><strong>inventor_g_m:</strong> same as <strong>inventor</strong> but restricted to males</li>
+            <li><strong>inventor_g_f:</strong> same as <strong>inventor</strong> but restricted to females</li>
+
+            <li><strong>inventor_pq_1:</strong> same as <strong>inventor</strong> but restricted to children whose
+                parental income is in quintile 1 of the parent income distribution of the children's birth cohort</li>
+            <li><strong>inventor_pq_2:</strong> same as <strong>inventor</strong> but restricted to children whose
+                parental income is in quintile 2 of the parent income distribution of the children's birth cohort</li>
+            <li><strong>inventor_pq_3:</strong> same as <strong>inventor</strong> but restricted to children whose
+                parental income is in quintile 3 of the parent income distribution of the children's birth cohort</li>
+            <li><strong>inventor_pq_4:</strong> same as <strong>inventor</strong> but restricted to children whose
+                parental income is in quintile 4 of the parent income distribution of the children's birth cohort</li>
+            <li><strong>inventor_pq_5:</strong> same as <strong>inventor</strong> but restricted to children whose
+                parental income is in quintile 5 of the parent income distribution of the children's birth cohort</li>
+
+            <li><strong>kid_count:</strong> number of children</li>
+          </ul>
         </p>
+
 
         <h3>Interactivity</h3>
 
-        <p>Brushing: Hovering over a cell on the legend will highlight all states that fall under that category.</p>
-        <p>Highlighting when hovering over a state.</p>
-        <p>Details-on-Demand: Hovering over a state will display information about that state.</p>
-        <p>Filtering: Choose the shown dataset using the dropdown at the top.</p>
+        <p><strong>Filtering:</strong> Choose a data variable using the dropdown at the top to re-render the map with that specific information.</p>
+        <p><strong>Highlighting:</strong> Hover over a state to bring it forward and outline it.</p>
+        <p><strong>Details-on-Demand:</strong> Hover over a state to display the state name, specific value for the selected variable, and number of kids
+          in that cohort. This will also display a bar chart listing all conditional inventor rates for that state.</p>
+        <p><strong>Brushing:</strong> Hover over a cell on the legend to highlight all states that fall under that category.</p>
 
 
+        <h3>Visualization</h3>
 
         <!-- Include d3.js v5 -->
         <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -187,19 +205,15 @@
         <h2>Attribution</h2>
         <p><strong>Code Examples Used:</strong></p>
         <ul>
-          <li>https://observablehq.com/@d3/choropleth</li>
-          <li>https://observablehq.com/@mbostock/mortality-due-to-alcohol-use-disorder</li>
-          <li>https://observablehq.com/@d3/u-s-map</li>
-          <li>https://github.com/topojson/us-atlas</li>
-          <li>https://github.com/d3/d3-geo</li>
-          <li>https://bl.ocks.org/sjengle/2f6d4832397e3cdd78d735774cb5a4f2</li>
-          <li>https://observablehq.com/@d3/bivariate-choropleth</li>
-          <li>https://observablehq.com/@d3/threshold-choropleth</li>
-          <li>https://bl.ocks.org/wilson428/c8fe76d04c280f0b5f36180329e034ef</li>
-          <li>https://gist.github.com/wilson428/c8fe76d04c280f0b5f36180329e034ef</li>
-          <li>https://www.ers.usda.gov/data-products/commuting-zones-and-labor-market-areas/</li>
-          <li>http://bl.ocks.org/jfreels/6734823</li>
-          <li>https://www.ers.usda.gov/data-products/commuting-zones-and-labor-market-areas/</li>
+          <li><a href="https://observablehq.com/@d3/choropleth">Choropleth</a> - Mike Bostock</li>
+          <li><a href="https://observablehq.com/@d3/u-s-map">U.S. Map</a> - Mike Bostock</li>
+          <li><a href="https://bl.ocks.org/sjengle/2f6d4832397e3cdd78d735774cb5a4f2">SF Arrests Map (One Week)</a> - Sophie Engle</li>
+          <li><a href="http://bl.ocks.org/jfreels/6734823">Create an HTML select box using d3.js and create a paragraph referencing the selection.</a> - Justin Freels</li>
+        </ul>
+
+        <p><strong>Map:</strong></p>
+        <ul>
+          <li><a href="https://github.com/topojson/us-atlas">U.S. Atlas TopoJSON</a></li>
         </ul>
 
       </div>
